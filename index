@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工程學群選系地圖｜給高中生的產業導覽</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09090f;
+  --bg1: #0f0f1a;
+  --bg2: #141420;
+  --bg3: #1a1a2e;
+  --border: #252535;
+  --border2: #1e1e30;
+  --text: #e2e2f0;
+  --text2: #9898b8;
+  --text3: #5a5a7a;
+  --science: #06b6d4;
+  --elec: #f97316;
+  --eng: #10b981;
+  --mgmt: #8b5cf6;
+  --glow-s: rgba(6,182,212,0.15);
+  --glow-e: rgba(249,115,22,0.15);
+  --glow-g: rgba(16,185,129,0.15);
+  --glow-m: rgba(139,92,246,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Noto Sans TC',sans-serif;
+  font-size:15px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* grid bg */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;z-index:0;
+}
+
+.rel{position:relative;z-index:1;}
+.container{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+/* ── TYPOGRAPHY ── */
+.mono{font-family:'JetBrains Mono',monospace;}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+h2.sec-title{font-size:clamp(22px,4vw,36px);font-weight:900;margin-bottom:12px;line-height:1.2;}
+.sec-desc{color:var(--text2);font-size:14px;max-width:600px;line-height:1.8;margin-bottom:36px;}
+
+/* ── HERO ── */
+.hero{
+  padding:80px 0 60px;
+  position:relative;overflow:hidden;
+}
+.hero-watermark{
+  position:absolute;bottom:-40px;right:-30px;
+  font-size:clamp(100px,20vw,260px);font-weight:900;
+  color:rgba(255,255,255,0.018);line-height:1;
+  font-family:'JetBrains Mono',monospace;
+  pointer-events:none;white-space:nowrap;letter-spacing:-8px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
+  padding:6px 14px;text-transform:uppercase;color:var(--text3);
+  margin-bottom:24px;border-radius:3px;
+}
+.hero h1{
+  font-size:clamp(36px,7vw,82px);font-weight:900;
+  line-height:1.05;letter-spacing:-2px;margin-bottom:20px;
+}
+.hero h1 .accent{color:var(--science);}
+.hero h1 .accent2{color:var(--elec);}
+.hero-sub{font-size:16px;color:var(--text2);max-width:560px;line-height:1.8;margin-bottom:40px;}
+.hero-groups{display:flex;flex-wrap:wrap;gap:10px;}
+.hero-group-pill{
+  padding:8px 18px;border-radius:4px;font-size:13px;font-weight:700;
+  border:1px solid;cursor:default;
+}
+
+/* ── STICKY NAV ── */
+.snav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(9,9,15,0.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:10px 0;
+}
+.snav-inner{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;}
+.snav-inner::-webkit-scrollbar{display:none;}
+.snav-btn{
+  flex-shrink:0;padding:6px 16px;border-radius:3px;
+  border:1px solid transparent;background:transparent;
+  font-family:'Noto Sans TC',sans-serif;font-size:13px;font-weight:500;
+  cursor:pointer;color:var(--text3);transition:all .15s;white-space:nowrap;
+}
+.snav-btn:hover{background:var(--bg2);border-color:var(--border);color:var(--text);}
+.snav-btn.active{background:var(--bg3);border-color:var(--border);color:var(--text);}
+
+/* ── SECTIONS ── */
+section{padding:70px 0;border-top:1px solid var(--border2);}
+
+/* ── KNOWLEDGE TREE ── */
+.ktree{display:flex;flex-direction:column;align-items:center;gap:0;}
+
+.kt-root{
+  background:linear-gradient(135deg,var(--bg2),var(--bg3));
+  border:1px solid var(--border);
+  padding:20px 48px;border-radius:6px;
+  font-weight:800;font-size:17px;text-align:center;
+  position:relative;z-index:2;
+  box-shadow:0 0 40px rgba(255,255,255,0.03);
+}
+.kt-root::after{content:'';position:absolute;bottom:-32px;left:50%;transform:translateX(-50%);width:1px;height:32px;background:var(--border);}
+
+.kt-rows{width:100%;margin-top:32px;display:flex;flex-direction:column;gap:0;}
+
+.kt-row{
+  display:grid;grid-template-columns:90px 1fr;gap:0;
+  position:relative;margin-bottom:0;
+}
+.kt-row::before{content:'';position:absolute;left:89px;top:0;bottom:0;width:1px;background:var(--border);}
+.kt-year{
+  padding:22px 16px 22px 0;
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  color:var(--text3);text-align:right;letter-spacing:1px;
+  position:relative;
+}
+.kt-year::after{content:'';position:absolute;right:-1px;top:28px;width:16px;height:1px;background:var(--border);}
+.kt-content{
+  background:var(--bg1);border:1px solid var(--border);border-radius:8px;
+  padding:20px 22px;margin:12px 0 12px 24px;
+}
+.kt-content h4{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text);}
+.chip-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;}
+.chip{padding:4px 12px;border-radius:3px;font-size:12px;font-weight:500;border:1px solid;}
+.chip-base{background:rgba(255,255,255,0.04);border-color:var(--border);color:var(--text2);}
+.chip-s{background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.3);color:var(--science);}
+.chip-e{background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.3);color:var(--elec);}
+.chip-g{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);color:var(--eng);}
+.chip-m{background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.3);color:var(--mgmt);}
+
+.branch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:10px;}
+.branch-item{
+  padding:10px 14px;border-radius:5px;font-size:12px;font-weight:700;
+  text-align:center;line-height:1.4;border:1px solid rgba(255,255,255,0.08);
+}
+.kt-note{font-size:12px;color:var(--text3);margin-top:12px;line-height:1.7;font-style:italic;}
+
+/* ── VIEW TOGGLE ── */
+.view-toggle-wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;margin-bottom:32px;
+}
+.view-toggle{
+  display:flex;background:var(--bg1);border:1px solid var(--border);
+  border-radius:6px;padding:4px;gap:4px;
+}
+.vt-btn{
+  padding:8px 20px;border-radius:4px;border:none;
+  font-family:'Noto Sans TC',sans-serif;font-size:13px;font-weight:600;
+  cursor:pointer;color:var(--text3);background:transparent;transition:all .2s;
+}
+.vt-btn.active{background:var(--bg3);color:var(--text);box-shadow:0 0 20px rgba(255,255,255,0.05);}
+
+/* ── PRODUCT TABS ── */
+.ptabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.ptab{
+  padding:9px 20px;border:1px solid var(--border);border-radius:4px;
+  background:var(--bg1);font-family:'Noto Sans TC',sans-serif;
+  font-size:13px;font-weight:600;cursor:pointer;color:var(--text3);transition:all .15s;
+}
+.ptab:hover{border-color:var(--text3);color:var(--text);}
+.ptab.active{background:var(--bg3);border-color:var(--border);color:var(--text);}
+
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* product banner */
+.pbanner{
+  display:flex;align-items:flex-start;gap:20px;
+  background:var(--bg1);border:1px solid var(--border);
+  border-radius:10px;padding:24px 28px;margin-bottom:28px;
+}
+.pbanner-icon{font-size:52px;line-height:1;flex-shrink:0;}
+.pbanner-title{font-size:20px;font-weight:800;margin-bottom:6px;}
+.pbanner-desc{color:var(--text2);font-size:13px;line-height:1.7;}
+.pbanner-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.pmeta-tag{
+  font-size:11px;padding:3px 10px;border-radius:2px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:1px;
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--text3);
+}
+
+/* subsystem / layer headers */
+.subsys-label{
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text3);
+  padding:8px 0;margin:20px 0 12px;
+  border-bottom:1px solid var(--border2);
+}
+
+/* dept card grid */
+.dcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px;}
+
+.dcard{
+  background:var(--bg1);border:1px solid var(--border2);
+  border-radius:8px;padding:16px 18px;cursor:pointer;
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.dcard::before{
+  content:'';position:absolute;top:0;left:0;width:3px;height:100%;
+  background:var(--dc,#444);transition:width .2s;
+}
+.dcard:hover{border-color:rgba(255,255,255,0.12);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.3);}
+.dcard:hover::before{width:5px;}
+.dcard.open{border-color:rgba(255,255,255,0.1);background:var(--bg2);}
+
+.dcard-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.dcard-icon{font-size:26px;line-height:1;flex-shrink:0;margin-top:2px;}
+.dcard-name{font-size:14px;font-weight:700;margin-bottom:3px;}
+.dcard-nick{
+  display:inline-block;font-size:10px;padding:2px 7px;border-radius:2px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:1px;
+  color:var(--dc,#888);background:color-mix(in srgb,var(--dc,#888) 12%,transparent);
+}
+.dcard-type{
+  margin-left:auto;font-size:10px;padding:2px 8px;border-radius:10px;
+  font-weight:700;flex-shrink:0;
+}
+.type-core{background:rgba(255,255,255,0.08);color:var(--text2);}
+.type-sat{background:rgba(255,255,255,0.04);color:var(--text3);}
+
+.dcard-role{
+  font-size:12px;color:var(--text2);line-height:1.7;
+  padding:9px 11px;background:rgba(255,255,255,0.03);
+  border-radius:4px;border-left:2px solid var(--dc,#444);
+  margin-bottom:6px;
+}
+
+.dcard-detail{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2);}
+.dcard.open .dcard-detail{display:block;}
+
+.detail-section{margin-bottom:12px;}
+.detail-key{
+  font-size:10px;font-family:'JetBrains Mono',monospace;
+  letter-spacing:1px;text-transform:uppercase;color:var(--text3);margin-bottom:6px;
+}
+.detail-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.dtag{
+  font-size:11px;padding:3px 9px;border-radius:2px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text2);
+}
+.dtag-co{
+  font-size:11px;padding:3px 9px;border-radius:2px;border:1px solid;
+  color:var(--dc,#888);background:color-mix(in srgb,var(--dc,#888) 8%,transparent);
+  border-color:color-mix(in srgb,var(--dc,#888) 25%,transparent);
+}
+
+.toggle-arrow{float:right;font-size:12px;color:var(--text3);transition:transform .2s;margin-top:2px;}
+.dcard.open .toggle-arrow{transform:rotate(180deg);}
+
+/* companies strip */
+.companies-strip{
+  background:var(--bg1);border:1px solid var(--border2);
+  border-radius:8px;padding:16px 20px;margin:24px 0 8px;
+}
+.companies-title{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:10px;
+}
+.companies-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.company-pill{
+  font-size:12px;padding:4px 12px;border-radius:3px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--text2);
+}
+.company-pill span{font-size:10px;color:var(--text3);margin-left:4px;}
+
+/* future strip */
+.future-strip{
+  background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(6,182,212,0.05));
+  border:1px solid rgba(139,92,246,0.2);
+  border-radius:8px;padding:18px 22px;margin-top:16px;
+}
+.future-title{
+  font-size:13px;font-weight:700;color:var(--mgmt);margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.future-items{display:flex;flex-wrap:wrap;gap:8px;}
+.future-item{
+  font-size:12px;padding:4px 12px;border-radius:3px;
+  background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.2);color:var(--text2);
+}
+
+/* problem layer (battery case) */
+.problem-layers{display:flex;flex-direction:column;gap:12px;}
+.problem-layer{
+  background:var(--bg1);border:1px solid var(--border2);border-radius:8px;overflow:hidden;
+}
+.layer-header{
+  padding:14px 18px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;
+  transition:background .15s;
+}
+.layer-header:hover{background:rgba(255,255,255,0.02);}
+.layer-num{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  flex-shrink:0;
+}
+.layer-title{font-size:14px;font-weight:700;}
+.layer-subtitle{font-size:12px;color:var(--text3);margin-left:auto;}
+.layer-body{display:none;padding:0 18px 16px;}
+.layer-body.open{display:block;}
+
+/* supply chain (semiconductor) */
+.chain{display:flex;flex-direction:column;gap:10px;}
+.chain-step{
+  background:var(--bg1);border:1px solid var(--border2);
+  border-radius:8px;overflow:hidden;
+}
+.chain-header{
+  padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;
+  transition:background .15s;
+}
+.chain-header:hover{background:rgba(255,255,255,0.02);}
+.chain-num{
+  width:32px;height:32px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;
+  flex-shrink:0;background:rgba(255,255,255,0.05);color:var(--text2);
+}
+.chain-name{font-size:14px;font-weight:700;}
+.chain-eg{font-size:12px;color:var(--text3);margin-left:auto;}
+.chain-body{display:none;padding:0 18px 16px;}
+.chain-body.open{display:block;}
+
+/* ── DEPT VIEW (science/group panels) ── */
+.group-panel{display:none;}
+.group-panel.active{display:block;}
+.group-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+.gtab{
+  padding:9px 18px;border:1px solid var(--border);border-radius:4px;
+  background:var(--bg1);font-family:'Noto Sans TC',sans-serif;
+  font-size:13px;font-weight:600;cursor:pointer;color:var(--text3);transition:all .15s;
+}
+.gtab:hover{color:var(--text);}
+
+/* ── COMPARE TABLE ── */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:8px;}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:720px;}
+thead tr{background:var(--bg2);}
+thead th{
+  padding:13px 16px;text-align:left;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;
+  text-transform:uppercase;font-weight:700;color:var(--text3);
+  border-bottom:1px solid var(--border);
+}
+tbody td{
+  padding:12px 16px;border-bottom:1px solid var(--border2);
+  vertical-align:top;line-height:1.6;color:var(--text2);
+}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:rgba(255,255,255,0.015);}
+.td-name{font-weight:700;color:var(--text);}
+.dot8{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+
+/* ── MYTHS ── */
+.myth-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.myth-card{
+  background:var(--bg1);border:1px solid var(--border2);
+  border-radius:8px;padding:18px;
+}
+.myth-wrong{font-size:13px;color:#ef4444;margin-bottom:10px;line-height:1.6;display:flex;gap:8px;}
+.myth-right{font-size:13px;color:#34d399;line-height:1.7;padding-top:10px;border-top:1px solid var(--border2);display:flex;gap:8px;}
+
+/* ── SOURCES PAGE ── */
+.sources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.source-card{
+  background:var(--bg1);border:1px solid var(--border2);
+  border-radius:8px;padding:18px;
+}
+.source-cat{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:10px;
+}
+.source-item{font-size:13px;color:var(--text2);margin-bottom:6px;line-height:1.6;}
+.source-item a{color:var(--science);text-decoration:none;}
+.source-item a:hover{text-decoration:underline;}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:40px 0;
+  font-size:12px;color:var(--text3);
+  border-top:1px solid var(--border2);
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  .hero h1{letter-spacing:-1px;}
+  .kt-row{grid-template-columns:60px 1fr;}
+  .pbanner{flex-direction:column;}
+  .view-toggle-wrap{flex-direction:column;align-items:flex-start;}
+}
+
+/* fade in */
+.fi{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s;}
+.fi.vis{opacity:1;transform:none;}
+
+/* ── NODE CARDS (產品視角三層) ── */
+.node-card{
+  background:var(--bg1);border:1px solid var(--border2);
+  border-radius:10px;margin-bottom:12px;overflow:hidden;
+}
+.node-header{
+  display:flex;align-items:center;gap:14px;
+  padding:18px 20px;cursor:pointer;
+  transition:background .15s;
+}
+.node-header:hover{background:var(--bg2);}
+.node-icon{font-size:28px;flex-shrink:0;}
+.node-header-text{flex:1;}
+.node-title{font-size:15px;font-weight:800;margin-bottom:4px;}
+.node-oneliner{font-size:12px;color:var(--text3);line-height:1.5;}
+.node-arrow{color:var(--text3);font-size:12px;flex-shrink:0;transition:transform .2s;}
+.node-card.open .node-arrow{transform:rotate(180deg);}
+.node-body{display:none;padding:0 20px 20px;border-top:1px solid var(--border2);}
+.node-card.open .node-body{display:block;}
+.node-intro{
+  font-size:13px;color:var(--text2);line-height:1.85;
+  margin:16px 0 14px;
+}
+.expand-btn,.dept-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;
+  padding:6px 14px;border-radius:4px;cursor:pointer;
+  border:1px solid var(--border);background:rgba(255,255,255,0.04);
+  color:var(--text3);margin-bottom:10px;transition:all .15s;
+}
+.expand-btn:hover{border-color:var(--science);color:var(--science);}
+.dept-btn{margin-left:8px;}
+.dept-btn:hover{border-color:var(--elec);color:var(--elec);}
+.node-deep{display:none;margin-bottom:14px;}
+.node-deep.open{display:block;}
+.node-depts{display:none;}
+.node-depts.open{display:block;}
+.node-dept-label{
+  font-size:10px;font-family:'JetBrains Mono',monospace;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--text3);margin:14px 0 8px;
+}
+.node-dept-label.sat{margin-top:10px;}
+
+.challenge-item{margin-bottom:14px;padding:12px 14px;background:var(--bg2);border-radius:6px;border-left:2px solid var(--border);}
+.challenge-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.challenge-body{font-size:13px;color:var(--text2);line-height:1.8;}
+
+.frontier-block{
+  margin-top:12px;padding:12px 14px;
+  background:rgba(6,182,212,0.06);border:1px solid rgba(6,182,212,0.15);
+  border-radius:6px;
+}
+.frontier-label{font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;color:var(--science);margin-bottom:6px;}
+.frontier-body{font-size:13px;color:var(--text2);line-height:1.8;}
+
+/* chain flow */
+.chain-flow{display:flex;flex-direction:column;gap:0;}
+.chain-flow-step{display:flex;gap:16px;}
+.chain-flow-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:36px;}
+.chain-flow-num{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--bg2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text3);
+  flex-shrink:0;z-index:1;
+}
+.chain-flow-line{width:1px;flex:1;background:var(--border2);margin:4px 0;}
+.chain-flow-right{flex:1;padding-bottom:12px;}
+
+/* problems layout */
+.prob-block{margin-bottom:32px;}
+.prob-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px;padding:18px 20px;background:var(--bg1);border:1px solid var(--border2);border-radius:10px;}
+.prob-icon{font-size:32px;flex-shrink:0;}
+.prob-title{font-size:17px;font-weight:800;margin-bottom:4px;}
+.prob-subtitle{font-size:12px;color:var(--text3);}
+.prob-layers{display:flex;flex-direction:column;gap:8px;}
+.prob-layer{background:var(--bg1);border:1px solid var(--border2);border-radius:8px;overflow:hidden;}
+.prob-layer-header{
+  display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;
+  border-left:3px solid var(--lc,#444);transition:background .15s;
+}
+.prob-layer-header:hover{background:var(--bg2);}
+.prob-layer-num{
+  width:28px;height:28px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;
+  flex-shrink:0;
+}
+.prob-layer-level{font-size:12px;font-weight:700;margin-bottom:2px;}
+.prob-layer-q{font-size:12px;color:var(--text2);}
+.prob-layer-arrow{color:var(--text3);font-size:12px;margin-left:auto;flex-shrink:0;transition:transform .2s;}
+.prob-layer-body{display:none;padding:0 18px 18px;border-top:1px solid var(--border2);}
+.prob-layer-body.open{display:block;}
+.prob-layer-body .node-intro{margin-top:14px;}
+.unsolved-block{margin-top:12px;padding:12px 14px;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.15);border-radius:6px;}
+.unsolved-label{font-size:11px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;color:var(--elec);margin-bottom:6px;}
+.unsolved-body{font-size:13px;color:var(--text2);line-height:1.8;}
+.prod-note{margin-top:16px;padding:14px 18px;background:rgba(249,115,22,0.06);border:1px solid rgba(249,115,22,0.2);border-radius:8px;font-size:13px;color:var(--text2);line-height:1.7;}
+
+/* responsive node */
+@media(max-width:640px){
+  .chain-flow-left{display:none;}
+  .node-header{padding:14px 16px;}
+  .node-body{padding:0 14px 16px;}
+  .prob-layer-header{padding:12px 14px;}
+}
+
+/* ── BLUR NOTICE (科系界線模糊提醒) ── */
+.blur-notice{
+  background:linear-gradient(135deg,rgba(249,115,22,0.06),rgba(139,92,246,0.05));
+  border:1px solid rgba(249,115,22,0.2);
+  border-radius:10px;padding:22px 26px;margin-bottom:28px;
+}
+.blur-notice-title{
+  font-size:13px;font-weight:700;color:var(--elec);
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.blur-notice p{font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:12px;}
+.blur-notice p:last-child{margin-bottom:0;}
+.blur-eg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin:12px 0;}
+.blur-eg{
+  background:rgba(255,255,255,0.03);border:1px solid var(--border2);
+  border-radius:6px;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;
+}
+.blur-eg strong{color:var(--text);display:block;margin-bottom:3px;}
+.blur-q{
+  font-size:13px;color:var(--elec);font-weight:600;
+  margin-top:14px;padding-top:14px;border-top:1px solid rgba(249,115,22,0.15);
+  line-height:1.7;
+}
+
+/* ── THINKING SECTION (選系思考) ── */
+.think-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.think-card{
+  background:var(--bg1);border:1px solid var(--border2);
+  border-radius:10px;overflow:hidden;
+}
+.think-card-head{
+  padding:18px 20px 14px;
+  border-bottom:1px solid var(--border2);
+}
+.think-num{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text3);margin-bottom:8px;
+}
+.think-q{font-size:15px;font-weight:800;line-height:1.4;color:var(--text);}
+.think-card-body{padding:16px 20px;font-size:13px;color:var(--text2);line-height:1.8;}
+.think-card-body p{margin-bottom:10px;}
+.think-card-body p:last-child{margin-bottom:0;}
+.think-card-body strong{color:var(--text);}
+.think-accent{
+  display:inline-block;padding:2px 8px;border-radius:3px;font-size:12px;
+  font-weight:700;margin:0 2px;
+}
+.think-divider{
+  height:1px;background:var(--border2);margin:14px 0;
+}
+.think-final{
+  background:linear-gradient(135deg,rgba(6,182,212,0.06),rgba(139,92,246,0.04));
+  border:1px solid rgba(6,182,212,0.15);border-radius:10px;
+  padding:22px 26px;margin-top:20px;
+}
+.think-final p{font-size:14px;color:var(--text2);line-height:1.9;margin-bottom:10px;}
+.think-final p:last-child{margin-bottom:0;}
+.think-final strong{color:var(--science);}
+</style>
+</head>
+<body>
+<div class="rel">
+
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<div class="hero">
+<div class="container">
+  <div class="hero-badge mono">台灣工程學群導覽 · 給高中生</div>
+  <h1>工程系在<br><span class="accent">解決什麼</span><br><span class="accent2">問題？</span></h1>
+  <p class="hero-sub">用你身邊看得到、摸得到的產品拆解工程學群——從手機到人形機器人，從半導體工廠到電池技術，找到你未來想站的位置。</p>
+  <div class="hero-groups">
+    <div class="hero-group-pill" style="color:var(--science);border-color:rgba(6,182,212,0.3);background:rgba(6,182,212,0.07)">🔬 理學院群</div>
+    <div class="hero-group-pill" style="color:var(--elec);border-color:rgba(249,115,22,0.3);background:rgba(249,115,22,0.07)">⚡ 電機電子群</div>
+    <div class="hero-group-pill" style="color:var(--eng);border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.07)">⚙️ 工程學群</div>
+    <div class="hero-group-pill" style="color:var(--mgmt);border-color:rgba(139,92,246,0.3);background:rgba(139,92,246,0.07)">📊 管理跨域群</div>
+  </div>
+</div>
+<div class="hero-watermark">ENGINEERING</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     STICKY NAV
+═══════════════════════════════════════════ -->
+<div class="snav">
+<div class="container">
+  <div class="snav-inner">
+    <button class="snav-btn active" onclick="navTo('foundation',this)">① 共同根基</button>
+    <button class="snav-btn" onclick="navTo('products',this)">② 產品拆解</button>
+    <button class="snav-btn" onclick="navTo('compare',this)">③ 快速比較</button>
+    <button class="snav-btn" onclick="navTo('myths',this)">④ 破解迷思</button>
+    <button class="snav-btn" onclick="navTo('thinking',this)">⑤ 選系思考</button>
+    <button class="snav-btn" onclick="navTo('sources',this)">⑥ 資料來源</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1: FOUNDATION
+═══════════════════════════════════════════ -->
+<section id="foundation">
+<div class="container">
+  <div class="eyebrow">Section 01</div>
+  <h2 class="sec-title">大家的根，其實長得很像</h2>
+  <p class="sec-desc">工程學群最常被誤解的是「每個系學完全不同的東西」。事實是大學前兩年核心知識高度重疊——差別在後期選擇用這些工具解決哪種問題。理解這個，你就能看懂為什麼工程師可以跨領域。</p>
+
+  <div class="ktree fi">
+    <div class="kt-root">🎓 所有工程科系的共同根基</div>
+    <div class="kt-rows">
+
+      <div class="kt-row">
+        <div class="kt-year">大一<br>大二</div>
+        <div class="kt-content">
+          <h4>🌱 共同基礎工具——不分科系，幾乎都會碰到</h4>
+          <div class="chip-row">
+            <span class="chip chip-base">微積分</span>
+            <span class="chip chip-base">線性代數</span>
+            <span class="chip chip-base">普通物理</span>
+            <span class="chip chip-base">普通化學</span>
+            <span class="chip chip-base">程式設計（C/Python）</span>
+            <span class="chip chip-base">工程數學</span>
+            <span class="chip chip-base">統計學</span>
+            <span class="chip chip-base">工程圖學</span>
+            <span class="chip chip-base">工程倫理</span>
+          </div>
+          <p class="kt-note">💡 這兩年各系差異最小，也是轉系的黃金窗口。數學與物理是所有工程的語言，學好它們，未來跨領域的門檻低很多。</p>
+        </div>
+      </div>
+
+      <div class="kt-row">
+        <div class="kt-year">大二<br>末～大三</div>
+        <div class="kt-content">
+          <h4>🌿 三大層次分流——解決問題的出發點開始不同</h4>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">同樣學「力學」——物理系問「為什麼物體會這樣運動？」、機械系問「這個結構能承受多少力？」、化工系問「流體在管道裡怎麼流？」——知識骨架共通，問題意識截然不同。</p>
+          <div class="branch-grid">
+            <div class="branch-item" style="background:rgba(6,182,212,0.12);border-color:rgba(6,182,212,0.25);color:var(--science)">🔬 理學院群<br><small style="font-weight:400;opacity:.7">問「為什麼」<br>基礎科學</small></div>
+            <div class="branch-item" style="background:rgba(249,115,22,0.12);border-color:rgba(249,115,22,0.25);color:var(--elec)">⚡ 電機電子群<br><small style="font-weight:400;opacity:.7">電力/訊號/晶片<br>軟體/通訊/光電</small></div>
+            <div class="branch-item" style="background:rgba(16,185,129,0.12);border-color:rgba(16,185,129,0.25);color:var(--eng)">⚙️ 工程學群<br><small style="font-weight:400;opacity:.7">機構/製程/材料<br>結構/生醫/環境</small></div>
+            <div class="branch-item" style="background:rgba(139,92,246,0.12);border-color:rgba(139,92,246,0.25);color:var(--mgmt)">📊 管理跨域群<br><small style="font-weight:400;opacity:.7">效率/品質/系統<br>讓製造更好</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="kt-row">
+        <div class="kt-year">大三<br>大四</div>
+        <div class="kt-content">
+          <h4>🌳 深度專業化——真正的科系特色在這裡展現</h4>
+          <div class="chip-row">
+            <span class="chip chip-s">量子力學・統計力學</span>
+            <span class="chip chip-s">有機化學・物理化學</span>
+            <span class="chip chip-e">IC設計・嵌入式系統</span>
+            <span class="chip chip-e">無線通訊・光電元件</span>
+            <span class="chip chip-g">精密加工・熱流分析</span>
+            <span class="chip chip-g">半導體製程・奈米材料</span>
+            <span class="chip chip-m">供應鏈管理・六標準差</span>
+            <span class="chip chip-m">工廠排程・良率分析</span>
+          </div>
+          <p class="kt-note">💡 這也是為什麼工程師跨領域不難——基礎工具都學過了，換一個「問題意識」，持續學習即可。台灣很多科技公司主管都是跨領域背景。</p>
+        </div>
+      </div>
+
+      <div class="kt-row">
+        <div class="kt-year">研究所<br>以後</div>
+        <div class="kt-content">
+          <h4>🚀 三層知識生態系——從基礎研究到產業落地</h4>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(6,182,212,0.07);border-radius:5px;border:1px solid rgba(6,182,212,0.15);">
+              <span style="font-size:20px;">🔬</span>
+              <div><div style="font-size:13px;font-weight:700;color:var(--science)">理學院：問「為什麼」</div><div style="font-size:12px;color:var(--text3)">發現自然規律，是所有工程的知識上游。物理系的量子理論→半導體；化學系的有機合成→新材料</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(16,185,129,0.07);border-radius:5px;border:1px solid rgba(16,185,129,0.15);">
+              <span style="font-size:20px;">⚙️</span>
+              <div><div style="font-size:13px;font-weight:700;color:var(--eng)">工程學院：問「怎麼做出來」</div><div style="font-size:12px;color:var(--text3)">應用理論造出東西，解決實際問題。電機讓理論變成電路，機械讓設計變成產品</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(139,92,246,0.07);border-radius:5px;border:1px solid rgba(139,92,246,0.15);">
+              <span style="font-size:20px;">📊</span>
+              <div><div style="font-size:13px;font-weight:700;color:var(--mgmt)">管理跨域：問「怎麼做得更好更快更便宜」</div><div style="font-size:12px;color:var(--text3)">最佳化製造流程，台積電良率從50%到99%以上，背後有大量工業工程師的貢獻</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2: PRODUCTS
+═══════════════════════════════════════════ -->
+<section id="products">
+<div class="container">
+  <div class="eyebrow">Section 02</div>
+  <h2 class="sec-title">用產品拆解：這東西誰負責做？</h2>
+  <p class="sec-desc">選一個你熟悉的產品或技術領域，看看它背後牽涉哪些科系的人才。兩種視角切換：產品視角看「這個東西由哪些科系合力完成」；科系視角看「我這個系在不同領域能做什麼」。</p>
+
+  <div class="view-toggle-wrap fi">
+    <div class="view-toggle">
+      <button class="vt-btn active" id="vt-product" onclick="switchView('product')">📦 產品視角</button>
+      <button class="vt-btn" id="vt-dept" onclick="switchView('dept')">🎓 科系視角</button>
+    </div>
+    <div style="font-size:12px;color:var(--text3)">點擊科系卡片可展開詳細說明</div>
+  </div>
+
+  <!-- PRODUCT VIEW -->
+  <div id="view-product">
+    <div class="ptabs">
+      <button class="ptab active" onclick="switchProduct('p1',this)">📱 3C產品</button>
+      <button class="ptab" onclick="switchProduct('p2',this)">🏭 半導體工廠</button>
+      <button class="ptab" onclick="switchProduct('p3',this)">🤖 人形機器人</button>
+      <button class="ptab" onclick="switchProduct('p4',this)">🚗 電動車</button>
+      <button class="ptab" onclick="switchProduct('p5',this)">🔋 電池技術</button>
+      <button class="ptab" onclick="switchProduct('p6',this)">🧠 AI產業</button>
+    </div>
+    <div id="product-panels"></div>
+  </div>
+
+  <!-- DEPT VIEW -->
+  <div id="view-dept" style="display:none;">
+
+    <!-- 科系界線模糊提醒區塊 -->
+    <div class="blur-notice fi">
+      <div class="blur-notice-title">⚠️ 讀這頁之前，有件事要先知道</div>
+      <p>頁面裡的科系分類，是為了幫助理解「各系在解決什麼問題」而畫的概念框架。<strong>但現實中，台灣大學的科系界線越來越模糊。</strong>同一個「系名」，在不同學校可能代表截然不同的培育方向。</p>
+
+      <div class="blur-eg-grid">
+        <div class="blur-eg"><strong>⚡ 電機系的例子</strong>台大電機系涵蓋電力、電子、光電、通訊、控制、生醫電子六大方向，全部在同一個系裡。陽明交大電機系分電子、通訊、電力控制三組。「電機系」三個字在不同學校可能差非常多。</div>
+        <div class="blur-eg"><strong>🔬 化工×材料的例子</strong>成大化工系已更名為「化學工程與材料工程學系」。很多學校的材料系有電子材料、能源材料分組，與化工系的研究高度重疊。這兩個系的界線正在消失。</div>
+        <div class="blur-eg"><strong>🤖 機電整合的例子</strong>「機電系」在某些學校是獨立系所，在其他學校則是機械系的一個分組或選修方向。名字不同，但學的東西可能很接近。</div>
+        <div class="blur-eg"><strong>💾 資工×電機的例子</strong>有些學校把資工和電機合在一起叫「電資學院」或「電機資訊學系」，學生後期再分流。「同一個系名」在不同學校的意思，真的很不一樣。</div>
+      </div>
+
+      <p>所以，<strong>系名只是入口，課程地圖才是真正的答案。</strong>每個系所都有公開的課程地圖與教育目標，說明這個系想培養什麼樣的人才。選填志願前花30分鐘看課程地圖，比只看系名有用得多。</p>
+
+      <div class="think-divider"></div>
+      <p>同樣叫「電機系」——台大電機和台科大電機，課程設計從一開始就不同：台大把演算法列為三年級必修，預設學生往EECS、IC設計等理論密度高的方向延伸；台科大則把實作專題列為必修，搭配模組化領域分流，設計更偏向工程整合與產業接軌。</p>
+      <div class="blur-q">你想成為哪一種工程師？——先回答這個問題，再去找對應的課程地圖，比看系名排名更有幫助。</div>
+    </div>
+
+    <div class="group-tabs" id="group-tabs"></div>
+    <div id="group-panels"></div>
+  </div>
+
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3: COMPARE
+═══════════════════════════════════════════ -->
+<section id="compare">
+<div class="container">
+  <div class="eyebrow">Section 03</div>
+  <h2 class="sec-title">所有科系快速比較</h2>
+  <p class="sec-desc">橫向對比各科系的核心問題意識、代表課程、常用工具與主要出路。</p>
+  <div class="tbl-wrap fi">
+    <table>
+      <thead>
+        <tr>
+          <th>科系</th>
+          <th>核心問題</th>
+          <th>代表課程</th>
+          <th>常用工具</th>
+          <th>主要出路</th>
+        </tr>
+      </thead>
+      <tbody id="compare-body"></tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4: MYTHS
+═══════════════════════════════════════════ -->
+<section id="myths">
+<div class="container">
+  <div class="eyebrow">Section 04</div>
+  <h2 class="sec-title">破解選系迷思</h2>
+  <p class="sec-desc">高中生常聽到的說法，哪些是誤解？</p>
+  <div class="myth-grid fi" id="myth-grid"></div>
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5: THINKING
+═══════════════════════════════════════════ -->
+<section id="thinking">
+<div class="container">
+  <div class="eyebrow">Section 05</div>
+  <h2 class="sec-title">選系之前，先想三件事</h2>
+  <p class="sec-desc">這不是標準答案，也沒有正確選擇。只是幾個問題，讓你想清楚自己在意的是什麼。</p>
+
+  <div class="think-grid fi">
+
+    <div class="think-card">
+      <div class="think-card-head">
+        <div class="think-num">Question 01</div>
+        <div class="think-q">科系名稱，和你四年後學到的東西，是同一件事嗎？</div>
+      </div>
+      <div class="think-card-body">
+        <p>很多人選系是選「名字」。電機系聽起來穩，資工系聽起來熱門，物理系聽起來很學術——但這些印象，真的反映了你在那個系四年會學什麼嗎？</p>
+        <p>同樣叫「電機系」，有些學校大三就要修演算法和IC設計，有些學校則更著重實作整合與產線系統。<strong>系名只是入口，課程地圖才是真相。</strong></p>
+        <div class="think-divider"></div>
+        <p style="color:var(--text3);font-size:12px;">你有沒有去看過你想填的那個系，它的課程地圖長什麼樣子？它說它想培養什麼樣的人？</p>
+      </div>
+    </div>
+
+    <div class="think-card">
+      <div class="think-card-head">
+        <div class="think-num">Question 02</div>
+        <div class="think-q">校名比較好聽，還是科系出口比較寬——你在意哪一個？</div>
+      </div>
+      <div class="think-card-body">
+        <p>台灣有個現實的說法：<strong>寧可去讀後段大學的電機系，也不要去讀前段大學的冷門理工。</strong>這句話刺耳，但它說中了一件事——科系有時候比校名更早決定你第一份工作的入口。</p>
+        <p>電機系的出口很寬：半導體、韌體、控制、設備、通訊、AI硬體，很多技術產業的門都開著。前段大學的冷門理工，很多時候是「延後兌現型資產」——需要研究所、跨域、實驗室，才能把基礎能力翻譯成產業語言。</p>
+        <div class="think-divider"></div>
+        <p style="color:var(--text3);font-size:12px;">你是想要大學畢業就有清楚的技術出口，還是願意用更長的時間換可能更高的天花板？這沒有對錯，但值得想清楚。</p>
+      </div>
+    </div>
+
+    <div class="think-card">
+      <div class="think-card-head">
+        <div class="think-num">Question 03</div>
+        <div class="think-q">進了某個產業之後，你站在鏈條的哪個位置？</div>
+      </div>
+      <div class="think-card-body">
+        <p>很多人畢業後順利找到「工程師」工作，卻發現和同學之間的差距，五年後開始拉開。職稱一樣，但所在的產業不同。</p>
+        <p>同樣是電機背景，有人進的是<strong>半導體核心製程、IC設計、AI伺服器供應鏈</strong>；有人進的是傳統製造業的設備維護、地方型電力系統、應用整合商。兩條路都需要專業，但與全球高附加價值產業的距離，從一開始就不一樣。</p>
+        <div class="think-divider"></div>
+        <p style="color:var(--text3);font-size:12px;">這不是說哪條路不好。而是在選系之前，值得問自己：你想站在產業鏈的哪個位置？</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="think-final fi">
+    <p>這頁的科系介紹，試圖讓你看到每個系「在解決什麼問題」。但最終，選系是一個關於你自己的問題——</p>
+    <p><strong>你對哪一種問題有好奇心？你願意用哪一種方式學習？你想進入哪一種產業、站在哪個位置？</strong></p>
+    <p>這些問題沒有標準答案。但把這些問題想清楚，比只看系名排名或聽別人說「這個系比較好」，要有用得多。</p>
+  </div>
+
+
+</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6: SOURCES
+═══════════════════════════════════════════ -->
+<section id="sources">
+<div class="container">
+  <div class="eyebrow">Section 06</div>
+  <h2 class="sec-title">資料來源與延伸閱讀</h2>
+  <p class="sec-desc">本頁內容依據以下學術、產業與政府資料彙整。建議有興趣的同學進一步參考原始資料。</p>
+  <div class="sources-grid fi" id="sources-grid"></div>
+</div>
+</section>
+
+<footer>
+  <div class="container">
+    本頁資訊以台灣大學院校工程學群課程設計及產業現況為基礎。各校系所課程略有差異，建議參考各校官網、開放日及在校生分享。
+    <br>內容如有錯誤歡迎指正，以正確資訊引導學生為最高原則。
+  </div>
+</footer>
+
+</div><!-- .rel -->
+
+<script>
+// ═══════════════════════════ DATA ═══════════════════════════
+
+// ═══ PRODUCT_DATA (可直接修改文字內容) ═══
+
+
+// ═══════════════════════════════════════════════════════
+// 產品視角資料 — 可直接修改以下內容
+// 搜尋 ✏️ 找到所有可編輯的文字欄位
+// ═══════════════════════════════════════════════════════
+
+const PRODUCT_DATA = {
+
+// ──────────────────────────────────────────────────────
+// 📱 3C 產品
+// ──────────────────────────────────────────────────────
+p1: {
+  icon: '📱',
+  // ✏️ 標題與說明
+  title: '3C產品（手機 × 筆電）',
+  desc: '你每天摸的智慧型手機和筆電，是人類史上最複雜的消費電子產品。一支手機裡有超過40個子系統，重量不到200克，卻濃縮了幾乎所有工程科系的成果。',
+  tags: ['Apple','Samsung','聯發科','高通','台積電代工','鴻海組裝'],
+  layout: 'cards', // cards | chain | layers
+  nodes: [
+    {
+      id: 'display',
+      icon: '🖥️',
+      // ✏️ 節點標題
+      title: '顯示與光學系統',
+      // ✏️ 一句話（第一眼）
+      oneliner: '你看到的每一個像素，背後都是光電物理的極限挑戰',
+      // ✏️ 一段話（第一層，30秒能讀完）
+      intro: 'OLED螢幕的每個像素是一個會自己發光的有機分子，亮度、色準、省電三者互相衝突。手機鏡頭模組在指甲蓋大小的空間裡，疊了十幾片玻璃和塑膠鏡片，還要在0.05秒內完成對焦。這兩件事同時做到極致，才有你現在用的螢幕和相機。',
+      // ✏️ 三個工程挑戰（第二層，點擊展開）
+      challenges: [
+        { title: '薄又亮又省電，三個目標互相打架', body: 'OLED要做薄，就要減少材料層數，但層數減少會讓光效率下降、需要更高電流來維持亮度，而高電流又加速有機材料老化。這個三角困境讓材料工程師必須在分子結構層面設計新型發光材料，每一代改進都是化學、物理、材料三個領域的協作成果。' },
+        { title: '摺疊螢幕：材料必須彎曲十萬次不裂', body: '摺疊手機的螢幕要在零下20度到60度的環境下，彎曲半徑小於3mm，重複十萬次以上不出現裂紋。這需要全新的超薄玻璃材料（比頭髮還薄）、特殊黏合劑、以及機械鉸鏈設計三者同時達標。目前還沒有人完全解決這個問題，你買到的摺疊機都還有妥協。' },
+        { title: '計算攝影：相機硬體已到物理極限，靠軟體突破', body: '手機鏡頭受限於體積，光學性能天花板遠低於單眼相機。現在拍出來的「好照片」，有超過一半是AI運算的結果——夜景模式是把幾十張短曝光照片疊加，人像模式的背景虛化是演算法模擬的，而不是真實的光學景深。這個方向讓資工系和光電系的工作邊界越來越模糊。' },
+      ],
+      // ✏️ 前沿研究（第三層）
+      frontier: '下一代的microLED螢幕嘗試用無機材料取代有機OLED，理論上壽命更長、亮度更高，但每個像素要獨立轉移到基板上，良率問題至今是量產的最大障礙。另一個方向是「可捲曲顯示器」，目標是讓螢幕像紙一樣捲起來放進口袋。',
+      // ✏️ 科系（核心/衛星）
+      core_depts: ['optics','mat','en'],
+      sat_depts:  ['physics','chem','cs'],
+    },
+    {
+      id: 'compute',
+      icon: '⚡',
+      title: '運算與儲存系統',
+      oneliner: '你口袋裡的晶片，運算能力超過1990年代的超級電腦',
+      intro: '手機處理器在指甲蓋大小的矽片上，刻了超過150億個電晶體，每個電晶體只有幾個原子寬。這些電晶體每秒切換數十億次，完成你的每一個操作——而且要在10瓦以內的功耗完成，否則電池撐不過一天、晶片也會過熱。',
+      challenges: [
+        { title: '電晶體小到量子效應開始搗亂', body: '當電晶體縮小到3奈米以下，電子會「穿牆而過」（量子穿隧效應），造成漏電和錯誤。這不再是單純的工程問題，而是量子物理的基本限制。台積電的2奈米製程必須重新設計電晶體的三維結構（GAA全環繞閘極），才能繼續縮小。' },
+        { title: '散熱：10瓦的熱要從指甲蓋面積散掉', body: '手機晶片的功率密度是太陽表面的好幾倍（相同面積比較）。如何在薄薄的機身裡把熱導出去，而且不能用風扇——這是機械系熱設計工程師最核心的挑戰之一。現在用的石墨烯導熱片、均溫板、液態金屬散熱膏，都是這個問題的解法。' },
+        { title: '記憶體速度跟不上處理器，成為整個系統的瓶頸', body: '處理器每秒能處理的資料量，遠超過記憶體能提供的速度。這個「記憶體牆」讓晶片80%的能耗和面積都花在快取記憶體上，而不是實際運算。解決方案之一是把記憶體直接疊在處理器上方（HBM高頻寬記憶體），這正是AI晶片的關鍵技術。' },
+      ],
+      frontier: 'AI加速器（NPU）正在取代部分CPU/GPU的工作，讓手機能在本地端跑語音辨識、翻譯、影像生成，不需要傳到雲端。下一步是「計算內記憶體」（In-Memory Computing），讓資料不需要在記憶體和處理器之間來回搬運，從根本解決記憶體牆問題。',
+      core_depts: ['en','ee','physics'],
+      sat_depts:  ['mat','cs','math'],
+    },
+    {
+      id: 'comm',
+      icon: '📡',
+      title: '通訊與連接系統',
+      oneliner: '讓訊號穿過空氣、不受干擾地找到你——比你想像的難很多',
+      intro: '你的手機同時支援5G、WiFi 6、藍牙5.3、UWB、NFC……每種通訊技術用不同頻率、不同協定。這些訊號要共存在同一個機身裡、共用同一套天線，互相不干擾，還要在移動中保持連線。這是通訊工程最複雜的挑戰之一。',
+      challenges: [
+        { title: '天線要塞進越來越薄的金屬機身裡', body: '金屬機殼會屏蔽電磁波，但消費者喜歡金屬質感。工程師必須在機殼上設計肉眼看不見的縫隙作為天線輻射口，同時確保這些縫隙不影響結構強度。iPhone側面那些細線，不是設計裝飾，是天線。' },
+        { title: '5G毫米波：速度快但穿牆能力幾乎為零', body: '5G毫米波頻段（24GHz以上）理論速度可達10Gbps，但被人體、玻璃、甚至雨水就能大量衰減。手機必須在0.1秒內找到最佳波束方向（波束成形），還要在被手遮住時自動切換天線。這需要RF晶片、天線設計、演算法三方同時精確配合。' },
+        { title: '多路訊號同時進來，如何不互相干擾', body: '現代手機同時接收多個WiFi空間流、多個基地台訊號，用MIMO技術把它們分開處理。但這需要在極短時間內完成複雜的矩陣運算——這就是數學系的線性代數直接在硬體上的實現。' },
+      ],
+      frontier: '衛星直連手機（Satellite Direct to Cell）讓手機不需要地面基地台就能通訊，SpaceX的Starlink和台灣的電信業者都在布局。這個技術的工程挑戰在於：低軌衛星移動速度極快，訊號都卜勒位移嚴重，手機端必須持續補償。',
+      core_depts: ['comm','en','ee'],
+      sat_depts:  ['cs','math','physics'],
+    },
+    {
+      id: 'power',
+      icon: '🔋',
+      title: '電源與電池系統',
+      oneliner: '讓手機撐過一整天，是化學、電機、機械三個科系的共同難題',
+      intro: '鋰電池的能量密度每年只進步約5%，但手機的功能每年翻倍。這個剪刀差讓電源工程師必須在每一個環節擠出效率——從充電器的電路設計，到電池管理IC，到作業系統的功耗排程，每一層都不能浪費。',
+      challenges: [
+        { title: '快充：10分鐘充50%，熱是最大的敵人', body: '快充本質上是用大電流強迫電池快速儲電，但大電流產生大量熱，熱會加速電池老化、嚴重時引發安全問題。現在的方案是把高壓轉換放在充電器裡，用低電壓大電流進入手機，再由手機端的BMS精確控制每顆電芯的充電曲線。' },
+        { title: '無線充電：電磁感應的效率只有75%左右', body: '無線充電的25%能量以熱的形式散掉，這對電池、機殼、充電板都是負擔。提升效率需要更精確的線圈設計和諧振頻率控制——這是電機系的磁場理論直接應用的場景。' },
+        { title: '電池老化：兩年後容量剩80%，這是化學的限制', body: '每次充放電，鋰離子在正負極之間移動，會造成材料微觀結構的不可逆損傷。這是目前鋰電池技術無法完全克服的基本限制。材料科學家正在研究固態電解質，希望從根本改變這個機制。' },
+      ],
+      frontier: '矽負極材料（在石墨裡混入矽）理論上可以把電池能量密度提升40%，但矽在充放電時體積變化高達300%，會讓電極粉碎。如何用奈米結構工程解決這個膨脹問題，是目前電池材料最熱門的研究方向之一。',
+      core_depts: ['mat','ee','che'],
+      sat_depts:  ['physics','chem','me'],
+    },
+    {
+      id: 'structure',
+      icon: '🏗️',
+      title: '結構與散熱系統',
+      oneliner: '0.3mm的厚度差，決定了你摸到的是廉價感還是高級感',
+      intro: '手機機殼不只是「外殼」——它是結構件（承受跌落衝擊）、散熱件（導走晶片的熱）、天線（電磁波輻射）、密封件（防水防塵）的四合一。這些功能互相衝突，機械工程師要在0.5mm的壁厚裡找到平衡。',
+      challenges: [
+        { title: '鋁合金加工：公差要控制在0.02mm以內', body: 'iPhone鋁合金機殼從整塊鋁錠CNC切削而來，材料利用率只有約10%（90%變成鋁屑回收）。這個精度要求對CNC機台、刀具、夾具設計都是極致挑戰。台灣的精密加工廠商（如可成科技）是全球少數能達到這個規格的供應商。' },
+        { title: '防水：IP68的密封要在彎曲和老化後依然有效', body: '手機的麥克風孔、喇叭孔、充電口都需要防水設計，但這些開口又必須讓聲音和充電線通過。目前用的是疏水性奈米塗層加矽膠密封圈，但密封膠在反覆彎曲和高低溫循環後會老化。這是材料系和機械系共同要解決的問題。' },
+        { title: '散熱：讓晶片的熱「流」到機殼再散掉', body: '手機沒有風扇，只能靠導熱材料把熱從晶片傳到機殼。現在用的石墨烯導熱膜、均溫板（VC板）、奈米碳管材料，都是為了這個目的開發的。但手機越薄，熱阻越高，這是薄型化設計最難突破的物理限制。' },
+      ],
+      frontier: '液態金屬（鎵銦合金）散熱膏的導熱率是傳統矽脂的40倍，但鎵會侵蝕鋁合金，使用範圍受限。另一個方向是把散熱結構整合進電池，讓電池本身也成為散熱件。',
+      core_depts: ['me','mat'],
+      sat_depts:  ['mecha','optics','env'],
+    },
+    {
+      id: 'software',
+      icon: '🧠',
+      title: '軟體與AI系統',
+      oneliner: '讓硬體「活起來」的那層邏輯，才是現在手機拉開差距的關鍵',
+      intro: '兩支處理器規格相近的手機，拍照效果可以差很多——差異不在鏡頭，在軟體。iOS和Android底層對硬體資源的調度方式不同、相機演算法不同、AI加速器的驅動方式不同。軟體工程師的工作，是讓同樣的硬體發揮出不同的性能上限。',
+      challenges: [
+        { title: '作業系統：讓幾十個APP同時跑，沒有任何一個卡頓', body: '手機作業系統每秒要處理幾千個來自不同APP的系統呼叫，同時管理記憶體、電源、感測器、網路。一個排程錯誤就可能讓某個APP凍結或整機當機。這需要對硬體架構有深入理解的系統軟體工程師，不是只會寫APP的那種。' },
+        { title: '端側AI：在手機本地跑大模型，而不是送到雲端', body: '把語音辨識、翻譯、圖片生成放在手機本地執行，可以保護隱私、減少延遲、在沒有網路時也能用。但手機的記憶體和功耗限制，讓模型必須被「壓縮」到只剩雲端版本的幾十分之一，同時還要保住效果——這是AI工程師目前最熱門的研究方向。' },
+        { title: '資安：你的臉、指紋、密碼，怎麼保證不被偷走', body: '生物辨識資料必須儲存在獨立的安全晶片（Secure Enclave）裡，與一般APP完全隔離，就連作業系統本身也無法讀取。這個設計需要硬體安全工程師、密碼學研究員、作業系統工程師三方合作。資工系的資安組就是在解決這類問題。' },
+      ],
+      frontier: '「個人AI助理」正在改變手機的操作邏輯——不是你去找功能，而是AI主動幫你完成任務。這需要在手機上跑一個能理解上下文、能操作其他APP的代理模型（AI Agent），而且要在5秒內回應，否則用戶體驗崩潰。',
+      core_depts: ['cs','math'],
+      sat_depts:  ['comm','en','ee'],
+    },
+  ],
+  companies: [
+    { name:'台積電', note:'晶片製造' },{ name:'聯發科', note:'IC設計' },
+    { name:'鴻海/富士康', note:'組裝製造' },{ name:'友達/群創', note:'面板' },
+    { name:'可成科技', note:'精密機殼' },{ name:'Apple/Samsung', note:'系統整合' },
+  ],
+  future: [
+    'AI手機：端側大模型讓手機真正「聽懂你」',
+    '衛星直連：沒有基地台也能通訊',
+    'XR穿戴：AR眼鏡逐漸取代手機螢幕',
+    '可捲曲顯示器：螢幕像紙一樣收起來',
+  ],
+},
+
+// ──────────────────────────────────────────────────────
+// 🏭 半導體工廠
+// ──────────────────────────────────────────────────────
+p2: {
+  icon: '🏭',
+  title: '半導體工廠（台積電上下游）',
+  desc: '台灣最重要的護國產業。一座台積電晶圓廠造價超過5000億台幣，從原料到晶片要經過超過1000道製程步驟，涉及幾乎所有工程科系。',
+  tags: ['台積電','聯電','日月光','ASML','應用材料','聯發科'],
+  layout: 'chain',
+  nodes: [
+    {
+      id: 'material',
+      icon: '⛏️',
+      title: '原料供應',
+      subtitle: '信越化學、台灣住友、長春化工',
+      oneliner: '一顆晶片的起點，是一粒沙子——但從沙到矽晶圓要經過幾十道純化步驟',
+      intro: '半導體級矽的純度必須達到99.9999999%（9個9），比任何其他工業材料都嚴苛。除了矽晶圓，晶片製造還需要數百種特殊化學品：光阻劑、蝕刻氣體、拋光液、清洗液——每一種都是特殊化工產品，台灣嚴重依賴日本和德國進口。',
+      challenges: [
+        { title: '矽晶圓：長出一根完美的單晶，需要精確控制幾十個變數', body: '用柴可拉斯基法把矽熔化後再緩慢拉出單晶棒，整根晶棒必須是完美的單晶體，不能有任何晶界或缺陷。這個過程需要精確控制溫度（誤差0.1度）、拉速、旋轉速度，連環境震動都會影響晶體品質。台灣的環球晶圓是全球前三大矽晶圓廠。' },
+        { title: '光阻劑：EUV光阻是全球最難合成的化學品之一', body: 'EUV（極紫外光）微影製程用的光阻劑，必須在極短波長的光照下發生精確的化學反應，解析度達到幾個奈米。全球能生產EUV光阻的公司不超過五家，日本信越化學和JSR壟斷大部分市場。台灣幾乎全部仰賴進口，是供應鏈的重大風險。' },
+        { title: '特殊氣體：某些氣體全球只有一兩家供應商', body: '晶片製造需要氖氣、氦氣、六氟化鎢等特殊氣體，有些純度要求超過99.9999%。俄烏戰爭爆發時，全球70%的半導體級氖氣來自烏克蘭，讓整個半導體產業短暫陷入恐慌。化工系和材料系的工程師正在幫台灣建立本土供應能力。' },
+      ],
+      frontier: '台灣正在積極建立本土光阻劑和特殊氣體的生產能力，減少對日本和歐洲的依賴。工研院和多所大學的化工、材料系研究室正在參與這個國家級計畫。',
+      core_depts: ['che','mat','chem'],
+      sat_depts:  ['physics','env','ie'],
+    },
+    {
+      id: 'equipment',
+      icon: '🔧',
+      title: '設備製造',
+      subtitle: 'ASML、應用材料、科林研發、東京威力科創',
+      oneliner: 'EUV曝光機是人類有史以來最精密的機器，造價超過30億台幣',
+      intro: 'ASML的EUV曝光機，是全球唯一能生產3奈米以下晶片的設備。它用雷射轟擊錫液滴產生極紫外光，透過400多片精密反射鏡，把電路圖案投影在晶圓上。整台機器有超過10萬個零件，每年只能生產約50台，全球最先進晶圓廠都在排隊等。',
+      challenges: [
+        { title: 'EUV曝光：光源、光學、機械三個領域同時到達物理極限', body: 'EUV波長只有13.5奈米，被幾乎所有材料吸收，所以必須在超高真空中操作，且無法用玻璃透鏡，只能用多層薄膜反射鏡。每片反射鏡的表面粗糙度必須小於0.1奈米（比原子還小的誤差），由蔡司（Zeiss）獨家供應。' },
+        { title: '晶圓傳送機器人：必須在真空中精準抓放，定位精度0.1微米', body: '晶圓在不同製程設備之間移動，靠全自動機械手臂完成，整個過程不能有任何人手接觸。機械手臂的定位精度必須達到0.1微米（人髮直徑的千分之一），還要在高溫、低溫、真空、腐蝕性氣體環境下長期可靠運作。這是機械系和機電系的頂尖挑戰。' },
+        { title: '台灣缺乏頂尖半導體設備能力，是最大的戰略弱點', body: '台積電的頂尖製程幾乎100%依賴美國、荷蘭、日本的設備。台灣本土設備商（如帆宣、均豪）主要做後段和輔助設備，前段核心設備幾乎空白。這不只是商業問題，也是地緣政治風險。' },
+      ],
+      frontier: '台灣正透過政府補助和產學合作，試圖建立本土半導體設備能力。清大、交大的精密工程研究室，以及工研院的機械所，都在參與相關研發。這是未來10年台灣工程人才最需要的方向之一。',
+      core_depts: ['me','optics','ee','mecha'],
+      sat_depts:  ['physics','mat','civil'],
+    },
+    {
+      id: 'design',
+      icon: '💻',
+      title: 'IC設計',
+      subtitle: '聯發科、輝達、蘋果、AMD、高通',
+      oneliner: '設計一顆現代處理器，複雜度相當於規劃一座有百億條道路的城市',
+      intro: '一顆現代處理器有超過1000億個電晶體，設計它不可能用手畫——工程師用硬體描述語言（HDL）寫出功能，再透過EDA軟體自動轉換成電路圖，最後再轉換成製程可以製作的幾何圖形。這個過程需要幾千名工程師協作數年。',
+      challenges: [
+        { title: '功耗：讓晶片更快，但不能讓電池更快沒電', body: '效能和功耗是一對永遠在拉扯的矛盾。提高時脈可以更快，但功耗以三次方增加。現代晶片設計有幾十個電源管理區塊，可以獨立關閉不用的電路，甚至精細到單一功能單元的等級。這種「電源管理」設計佔了現代晶片工程師工作量的相當大比例。' },
+        { title: '驗證：怎麼確認1000億個電晶體沒有一個出錯？', body: '晶片設計完成後，量產前必須確認功能正確。但不可能窮舉所有可能的輸入組合（比宇宙的原子數還多），工程師必須用形式驗證、模擬、和特殊測試向量來找出潛藏的bug。英特爾的奔騰晶片浮點除法bug（1994年）是歷史上最著名的驗證失敗案例，損失了數億美元。' },
+        { title: '先進封裝：當單一晶片做不到，就把多顆晶片疊在一起', body: '摩爾定律趨緩後，IC設計師開始用「Chiplet」方式設計——把不同功能切成多顆小晶片，再透過先進封裝技術連接在一起。台積電的CoWoS和SoIC封裝讓多顆晶片之間的連線密度達到傳統PCB的千倍，這正是AI晶片（如輝達H100）的關鍵技術。' },
+      ],
+      frontier: '開源晶片架構RISC-V正在打破少數公司壟斷指令集的局面，讓更多人能設計自己的處理器。台灣的晶心科技（Andes Technology）是全球最重要的RISC-V IP廠商之一，也是本土IC設計的重要成果。',
+      core_depts: ['en','cs','ee','math'],
+      sat_depts:  ['physics','comm'],
+    },
+    {
+      id: 'fab',
+      icon: '⚗️',
+      title: '晶圓前段製程',
+      subtitle: '台積電、聯電、Samsung Foundry',
+      oneliner: '在比頭髮細一萬倍的尺度上，精確複製電路圖——超過1000道步驟，任何一步出錯就報廢',
+      intro: '晶圓製造是人類工業史上最複雜的製造過程。微影、蝕刻、薄膜沉積、離子佈植……超過1000道製程步驟，在一個比醫院手術室還要潔淨一萬倍的無塵室裡完成。一粒0.1微米的灰塵就能毀掉整片晶圓。',
+      challenges: [
+        { title: '微影：把幾十億個圖案精確印在晶圓上，誤差不能超過原子尺度', body: '微影製程像在晶圓上「曬相片」——用光把電路圖案投影在光阻層上，再用化學品洗去曝光的部分。EUV製程的圖案線寬只有7奈米，但光的波長是13.5奈米——比要印的圖案還大。這需要用特殊的光學技術（多重曝光、計算微影）來突破光的衍射極限。' },
+        { title: '蝕刻：用電漿精確挖掉幾奈米的材料，形狀必須完美垂直', body: '等離子體蝕刻用高能量的反應性電漿，把晶圓表面沒有被光阻保護的部分精確移除。側壁必須接近完美垂直（90度），任何傾斜都會影響電晶體特性。化工系的電漿物理和氣體化學知識是這個步驟的核心。' },
+        { title: '良率：同一片晶圓上，能用的晶片比例', body: '新製程剛開發出來時，良率可能只有10-20%。每提升1%良率，對台積電的獲利影響以億元計。良率工程師必須找出哪個製程步驟造成了哪種缺陷，這需要統計分析、電子顯微鏡觀察、以及對所有製程步驟的深入理解。這是工業工程和化工、材料的交叉地帶。' },
+      ],
+      frontier: '2奈米以下製程的GAA（全環繞閘極）電晶體結構是目前最前沿的製程技術。再往下，可能需要用二維材料（如二硫化鉬）取代矽，這是材料系和物理系正在研究的下一個重大突破方向。',
+      core_depts: ['che','mat','physics','optics','en','ee'],
+      sat_depts:  ['civil','env','me'],
+    },
+    {
+      id: 'packaging',
+      icon: '📦',
+      title: '封裝測試',
+      subtitle: '日月光、矽品、南茂、頎邦',
+      oneliner: '把裸晶片裝進能和外界溝通的外殼，這個步驟正在被AI需求重新定義',
+      intro: '封裝把晶圓切割後的裸晶片（die），連接到基板和引腳上，形成你看到的黑色IC。傳統封裝是「必要的包裝」，但AI時代的先進封裝（CoWoS、HBM堆疊）已經變成提升性能的關鍵技術，台積電和日月光都在大量投資。',
+      challenges: [
+        { title: 'CoWoS：把GPU和HBM記憶體並排放在同一個中介層上', body: '輝達H100 GPU需要把8顆HBM2e記憶體堆疊體，透過矽中介層（Silicon Interposer）連接到GPU晶片，形成超寬的資料通道。這片中介層本身就像一片小型晶圓，需要先進的微影製程，但做的不是電晶體，而是連線。' },
+        { title: '晶圓級封裝：在晶圓切割前就完成封裝，提高效率', body: '傳統是先切割再封裝，晶圓級封裝（WLP）在還是整片晶圓時就做完所有連線，再切割成單顆。這大幅縮短了封裝尺寸和製程時間，但對良率管控要求更高——一顆不良品在晶圓上就可能影響周圍的好晶片。' },
+        { title: '測試：怎麼在出廠前找出所有壞掉的晶片', body: '一片晶圓上可能有幾千顆晶片，每顆都要在幾毫秒內完成功能測試。自動測試設備（ATE）必須在極短時間內發出幾百萬個測試訊號，並判讀結果。如何設計測試向量讓所有可能的缺陷都被抓到，是電子系和資工系「測試工程」的核心問題。' },
+      ],
+      frontier: '3D堆疊封裝（3D IC）把多顆晶片直接垂直疊在一起，用矽穿孔（TSV）連接，性能比並排放更好，但散熱成為新的挑戰——中間的晶片熱無法散出去。如何解決3D封裝的熱問題，是機械系和材料系的新戰場。',
+      core_depts: ['me','mat','en','ee','mecha'],
+      sat_depts:  ['cs','che'],
+    },
+    {
+      id: 'yield',
+      icon: '📊',
+      title: '良率與製造管理',
+      subtitle: '台積電IE部門、品質工程組',
+      oneliner: '台積電良率從早期50%提升到現在99%以上——這背後是工業工程師的貢獻',
+      intro: '良率每提升1%，台積電一年多賺的錢以億元計。良率工程師每天分析幾百萬筆製程數據，尋找哪個設備、哪個步驟、哪個時段，和哪種缺陷有關聯。這不是直覺，是統計製程管制（SPC）的精密應用。',
+      challenges: [
+        { title: '找出缺陷根因：在1000道步驟裡，是哪一步出問題？', body: '一顆晶片製程有超過1000道步驟，當良率下降時，工程師必須在幾天內找出是哪個步驟、哪台設備、哪種化學品造成的缺陷。這需要設計對照實驗、分析良率和各種製程參數的相關性、以及對所有製程步驟都有足夠的理解。是工業工程、統計學、材料科學的交叉應用。' },
+        { title: '設備綜合效率（OEE）：讓每台幾十億元的設備盡量不閒置', body: '一台EUV機器每小時要曝光幾百片晶圓才能讓投資回本。任何設備停機（維護、換料、等待）都是直接的金錢損失。工業工程師要設計最佳的維護排程、備料計畫、和設備調度方案，讓OEE盡可能接近100%。' },
+        { title: '良率資料挖掘：AI正在改變良率分析的方式', body: '台積電每天產生的製程數據量以PB（千TB）計，傳統統計方法已經無法全部分析。機器學習和深度學習正在被用來自動找出製程參數和缺陷之間的複雜非線性關係，大幅縮短根因分析的時間。這讓資工系的AI工程師開始進入晶圓廠的核心工作。' },
+      ],
+      frontier: '「數位孿生」技術把整個晶圓廠在電腦裡完整模擬，讓工程師可以在虛擬環境中測試新的製程調整，找到最佳參數後再實際執行。這個技術可能讓良率提升的速度比以往快十倍。',
+      core_depts: ['ie','cs','math','engmgmt'],
+      sat_depts:  ['che','mat','en'],
+    },
+    {
+      id: 'facilities',
+      icon: '🏗️',
+      title: '廠務與環安',
+      subtitle: '台積電廠務處、環安衛部門',
+      oneliner: '台積電廠房是全球最精密的建築——地面振動必須小於一根頭髮的百分之一',
+      intro: '晶圓廠不只是一棟建築。它需要超純水（比任何商業飲用水純千倍）、特殊氣體管路、防腐蝕廢液處理系統、奈米級振動控制，以及能承受台灣地震的結構設計。廠務工程師的工作，是讓這個極端精密的生產環境24小時穩定運作。',
+      challenges: [
+        { title: '超純水：一公升水裡不能有超過幾個細菌', body: '晶圓清洗用的超純水，電阻率要達到18.2 MΩ·cm（幾乎是理論上限），溶解氧控制在ppb（十億分之一）等級。台積電每天用水量相當於幾萬戶家庭，超純水系統本身就是一個大型化工廠。環工系和化工系工程師是這個系統的主要設計者。' },
+        { title: '振動控制：奈米製程不能有任何微振動', body: '3奈米製程的圖案線寬只有幾個原子，任何微小的振動都會讓曝光圖案模糊。廠房地基必須做主動隔振設計，甚至連附近道路的車輛都要管制。這是土木工程（結構振動）和機械工程（精密隔振）的最高難度應用之一。' },
+        { title: '廢液處理：每天處理幾百種化學廢棄物', body: '晶圓廠每天產生含有氫氟酸、硫酸、各種有機溶劑的廢液，必須分類處理後才能排放。台積電承諾廢棄物零掩埋，意思是所有廢棄物都要找到回收或再利用的出路。環工系工程師設計這套複雜的廢物管理系統，是台積電ESG目標的核心執行者。' },
+      ],
+      frontier: '台積電正在把水和廢棄物的回收率推向極限。研究中的「封閉迴路水循環」技術，目標是讓晶圓廠的用水量減少80%，這對台灣這個缺水的島嶼極為重要，也是環工系和化工系未來十年最重要的應用場景之一。',
+      core_depts: ['civil','env','me','ee'],
+      sat_depts:  ['che','mat','engmgmt'],
+    },
+  ],
+  companies: [
+    { name:'台積電', note:'晶圓代工龍頭' },{ name:'ASML', note:'EUV設備' },
+    { name:'應用材料', note:'製程設備' },{ name:'聯發科', note:'IC設計' },
+    { name:'日月光', note:'先進封裝' },{ name:'環球晶圓', note:'矽晶圓' },
+  ],
+  future: [
+    '2奈米以下製程（GAA電晶體結構）',
+    '先進封裝取代部分摩爾定律（Chiplet時代）',
+    '台灣本土設備和材料自主化',
+    'AI加速晶片需求持續爆炸',
+  ],
+},
+
+// ──────────────────────────────────────────────────────
+// 🤖 人形機器人（完整版）
+// ──────────────────────────────────────────────────────
+p3: {
+  icon: '🤖',
+  title: '人形機器人',
+  desc: 'Tesla Optimus、Figure 02、Unitree H1——人形機器人是2024年最熱的工程前沿。它是唯一需要幾乎所有工程科系同時合作的產品，也是最能展示跨域整合的案例。',
+  tags: ['Tesla Optimus','Figure AI','Boston Dynamics','Unitree','廣明光電','台達電'],
+  layout: 'cards',
+  nodes: [
+    {
+      id: 'perception',
+      icon: '👀',
+      title: '感知系統',
+      oneliner: '讓機器人在0.1秒內看懂三維世界——比讓它走路還難',
+      intro: '人類的眼睛不只「看到」東西，大腦同時判斷距離、材質、動向、危險性。讓機器人做到同樣的事，還要在光線不穩定、地面不平、旁邊有人走動的真實環境裡即時完成——這是感知系統要解決的問題。',
+      challenges: [
+        { title: '深度感知：知道物體在哪，比知道物體是什麼更難', body: '普通攝影機只拍平面，機器人要抓東西必須知道三維空間的精確位置。LiDAR用雷射測距最精準但貴且耗電；結構光（iPhone Face ID的原理）在強光下失效；雙目視覺靠視差計算便宜但運算量大。Tesla Optimus選擇純視覺方案，代價是需要大量AI運算補償光學資訊的不足。' },
+        { title: '即時性：感知更新必須快過動作速度', body: '機器人走路時重心不斷轉移，感知系統必須在10毫秒以內更新一次對環境的理解，否則動作出錯。這對晶片算力要求極高，而且必須在機器人本體上完成（邊緣運算），因為傳到雲端再回來的網路延遲不可接受。光電系設計感測器，電子系設計晶片，資工系寫驅動程式——三個科系缺一不可。' },
+        { title: '泛化：看到從沒見過的東西，能不能做出正確判斷', body: '機器人在工廠裡見過幾千種零件，但第一次進入家庭環境，要能判斷眼前的毛巾、花瓶、貓咪各自能不能動、怎麼拿。這種「泛化能力」目前仍是機器人視覺的最大未解問題。數學系的學習理論和資工系的電腦視覺研究正在試圖突破這個限制。' },
+      ],
+      frontier: '神經形態感測器模仿人類視網膜，只傳送畫面「變化的部分」，省電超過100倍，延遲低於1毫秒。光纖觸覺感測器讓機器人能感受接觸的壓力分布，是讓機器人安全處理雞蛋或協助老人的關鍵技術。這兩個方向分別是光電系和生醫工程的前沿研究。',
+      core_depts: ['optics','en','cs','comm'],
+      sat_depts:  ['physics','math','bio'],
+    },
+    {
+      id: 'cognition',
+      icon: '🧠',
+      title: '認知與決策系統',
+      oneliner: '讓機器人不只執行命令，而是真正「理解」任務',
+      intro: '早期機器人是「告訴它每個步驟該怎麼做」。現在的目標是「告訴它你想要什麼結果，讓它自己想辦法」。這個差距，就是認知系統要跨越的鴻溝——也是人形機器人最難、最有價值的部分。',
+      challenges: [
+        { title: '從「執行步驟」到「理解任務」：LLM正在改變機器人決策', body: '把大型語言模型（LLM）作為機器人的「大腦」，讓機器人能理解自然語言指令（「幫我把桌上的紅色杯子放到水槽裡」），並自動分解成可執行的動作序列。但LLM的推理速度和機器人的動作速度之間有巨大落差，如何讓兩者協調是資工系目前最熱門的研究問題之一。' },
+        { title: '強化學習：讓機器人自己從失敗中學習走路', body: '波士頓動力早期靠人工設計動作控制器，耗費數年。現代方法用強化學習，讓機器人在模擬環境裡自己嘗試幾億次，從跌倒中學習平衡。Unitree的H1機器人用這個方法，幾個月就學會了在各種地形行走。但從模擬到真實世界的「sim-to-real gap」（模擬和現實的差距）仍是重大挑戰。' },
+        { title: '即時路徑規劃：在動態環境中0.1秒內找到最佳路線', body: '機器人在人群中移動，必須即時預測每個人的下一步，同時規劃自己的路徑避免碰撞。這是計算複雜度極高的最佳化問題——理論上搜尋所有可能路徑需要天文數字的計算量，工程師必須用啟發式演算法（如A*、RRT）在精度和速度之間取得平衡。數學系的最佳化理論是這個問題的基礎。' },
+      ],
+      frontier: '「具身基礎模型」（Embodied Foundation Model）試圖訓練一個能控制各種不同機器人的通用AI，就像ChatGPT能回答各種問題一樣。Google DeepMind的RT-2和OpenAI的研究方向都在這裡。台灣的資工研究室也開始投入這個領域。',
+      core_depts: ['cs','math','ee','comm'],
+      sat_depts:  ['physics','en'],
+    },
+    {
+      id: 'actuation',
+      icon: '💪',
+      title: '動作執行系統',
+      oneliner: '讓關節動得快、動得準、動得有力——三個要求永遠互相衝突',
+      intro: '人形機器人要跑、要跳、要搬重物，同時要輕柔地拿起雞蛋。這需要每個關節的馬達在瞬間輸出精確的力矩，誤差不能超過千分之一秒。這是電機系、機械系、機電系三者最核心的交叉戰場。',
+      challenges: [
+        { title: '諧波減速機：讓馬達的高速小力矩，變成低速大力矩', body: '電動馬達轉速很快但力矩很小，直接用來驅動關節力道不夠。諧波減速機是一種利用彈性齒輪變形來傳動的精密機構，減速比可達50:1到160:1，而且幾乎沒有齒隙（間隙），是機器人關節最常用的傳動方案。全球主要供應商是日本的哈默納科，台灣正在嘗試國產化。' },
+        { title: '力矩控制：讓機器人感知自己施加的力量', body: '機器人要安全地和人互動，不能只控制「位置」（移動到哪裡），還要控制「力」（施加多少力）。這需要在每個關節裝力矩感測器，並把感測器訊號實時反饋到控制演算法裡。這種「力矩控制」比位置控制複雜十倍，是電機控制工程師的頂尖挑戰。' },
+        { title: '電機效率：讓機器人電池撐過一整天工作', body: '人形機器人全身有30-40個關節，每個都需要馬達驅動。整體能耗決定了電池能撐多久。如何設計能量效率最高的馬達和驅動電路，同時在制動時把動能轉回電能（再生制動），是電機系工程師在機器人領域最重要的問題。' },
+      ],
+      frontier: '人工肌肉（人造肌肉材料）試圖用電致動材料取代馬達和齒輪，像生物肌肉一樣直接產生力和位移。目前仍在研究階段，材料系和生醫工程的研究室是主要參與者。液壓驅動在高力矩場景仍有優勢，波士頓動力的Atlas部分版本還在使用液壓。',
+      core_depts: ['ee','me','mecha','aero'],
+      sat_depts:  ['mat','physics','bio'],
+    },
+    {
+      id: 'structure',
+      icon: '🦴',
+      title: '機械結構系統',
+      oneliner: '讓機器人輕如羽毛，強如鋼鐵——這是材料和結構的終極矛盾',
+      intro: '人形機器人要輕（省電、靈活），要強（能承受跌倒衝擊），要剛（精準定位），要彈（吸收衝擊保護關節）。這四個要求每一個單獨達到都不難，同時達到才是機械設計的真正挑戰。',
+      challenges: [
+        { title: '碳纖維複合材料：比鋁輕40%，比鋼強幾倍——但加工困難', body: '高性能人形機器人的手臂和腿骨越來越多用碳纖維複合材料，可以大幅降低重量（對電池續航影響巨大）同時維持強度。但碳纖維不像金屬可以直接加工，需要鋪層設計、固化製程、加工參數的精密控制。航太系和材料系的複合材料研究直接應用在這裡。' },
+        { title: '仿生結構：人類的骨骼為什麼比機器人骨架聰明', body: '人類的骨骼在承受衝擊時，通過微觀的晶格結構分散應力。機器人的金屬骨架在反覆衝擊後容易出現疲勞裂紋。機械系和材料系工程師正在研究用仿生的多孔結構和梯度材料來解決這個問題，讓機器人骨架在輕量的同時具備更好的抗疲勞特性。' },
+        { title: '公差堆疊：每個零件的誤差加起來，整個系統就歪了', body: '機器人有幾百個零件，每個零件都有製造公差。這些公差累積下來，可能讓手指末端的位置誤差達到幾毫米，對精密操作是致命問題。機械設計師必須用公差分析工具，在設計階段就預測並控制這個累積誤差，這是精密機械設計的核心技能。' },
+      ],
+      frontier: '「4D列印」的形狀記憶材料，在溫度或電場改變時會自動變形，可能讓機器人的某些關節不需要馬達就能產生動作。這個方向結合了材料系、機械系、生醫工程的知識，是目前最跨域的機器人研究方向之一。',
+      core_depts: ['me','mat','aero'],
+      sat_depts:  ['bio','mecha','che'],
+    },
+    {
+      id: 'energy',
+      icon: '⚡',
+      title: '能源系統',
+      oneliner: '讓機器人持續運作4小時，比讓它走路還難解決',
+      intro: '人形機器人全身幾十個關節馬達，加上感測器、電腦、通訊，總功耗可能超過1000瓦。要讓它工作4小時以上，電池必須既輕又大容量，充電必須快，能量利用必須極度有效率。這是目前限制人形機器人商業化最大的技術瓶頸之一。',
+      challenges: [
+        { title: '能量密度 vs 安全性：機器人電池不能像手機電池一樣冒險', body: '手機電池追求極致能量密度，偶爾膨脹或過熱用戶還能接受。但機器人在工廠或家庭環境裡，電池問題可能造成人員受傷或財物損失。這迫使機器人電池在能量密度上做出妥協，換取更高的安全性和循環壽命，這是材料系、化工系、電機系共同面對的設計取捨。' },
+        { title: '再生制動：跌倒和剎車時把動能變回電能', body: '機器人在下樓梯或減速時，馬達可以反轉當發電機，把動能轉回電能存到電池。這個「再生制動」技術在電動車上已很成熟，但在機器人的多關節系統裡協調更複雜——每個關節要同時判斷什麼時候該驅動、什麼時候該回收，這是電機系控制工程師的工作。' },
+        { title: '熱管理：高功率電池和馬達同時運作產生的熱怎麼散', body: '機器人高強度工作時，電池和馬達驅動器會產生大量熱。如果熱散不掉，電池性能下降、電子元件損壞。但機器人的空間有限，不能裝大型散熱器，散熱設計必須輕薄且高效。這是機械系熱設計和電機系功率電子的交叉問題。' },
+      ],
+      frontier: '固態電池如果成功量產，能量密度比現有鋰電池高40-80%，而且沒有液態電解質的安全風險，對機器人應用幾乎完美。豐田和三星目標在2027-2030年量產固態電池，屆時將是機器人行業的重要轉折點。',
+      core_depts: ['ee','mat','che'],
+      sat_depts:  ['me','physics','chem'],
+    },
+    {
+      id: 'tactile',
+      icon: '🖐️',
+      title: '觸覺與仿生系統',
+      oneliner: '讓機器人感受到「這個東西要輕拿」——目前最難突破的感知問題',
+      intro: '人類靠皮膚裡的幾十種感受器，感知壓力、溫度、振動、紋路、滑動。這讓我們能在不看手的情況下，感知水杯快要滑落而在0.1秒內調整握力。讓機器人有同等的觸覺感知，是人形機器人目前最落後於人類的能力。',
+      challenges: [
+        { title: '觸覺感測器：覆蓋整隻手幾千個感測點，同時即時讀取', body: '一個高解析度觸覺手套有超過1000個壓力感測點，如何把這些訊號同時讀取、處理，不增加太多重量和功耗，是電子系和通訊系的系統整合挑戰。目前最先進的觸覺感測器用柔性電子薄膜製作，材料系的柔性電子研究是關鍵基礎。' },
+        { title: '滑動偵測：在物體滑落前0.05秒就感知到並調整', body: '人類能感覺到物體開始滑動（微小的皮膚變形），並在0.05秒內增加握力。這種「預測性抓握控制」目前機器人還做不到，是生醫工程和機電整合的前沿問題。研究這個問題的工程師，需要同時理解人類神經系統、感測器設計和控制理論。' },
+        { title: '柔性機器人手：能拿雞蛋，也能搬磚頭', body: '剛性金屬手指在抓取柔軟或不規則物體時容易損壞物品。軟性機器人手用充氣或形狀記憶材料製作手指，能自動適應物體形狀。但軟性材料的力量和精度比金屬差很多。如何在柔軟和強壯之間取得平衡，是機械系和材料系共同的研究方向。' },
+      ],
+      frontier: '光纖觸覺感測技術把光纖編織成網格，透過偵測光的偏振變化來感知壓力分布，解析度可達人類皮膚的等級，而且完全電磁絕緣，在強磁場環境下也能正常工作。這個技術是光電系研究室目前最有趣的機器人應用之一。',
+      core_depts: ['bio','optics','mat'],
+      sat_depts:  ['en','comm','me','physics'],
+    },
+  ],
+  companies: [
+    { name:'Tesla', note:'Optimus' },{ name:'Figure AI', note:'Figure 02' },
+    { name:'Boston Dynamics', note:'Atlas' },{ name:'Unitree', note:'H1/G1' },
+    { name:'廣明光電', note:'台灣機器人' },{ name:'台達電', note:'工業自動化' },
+  ],
+  future: [
+    '人形機器人進工廠取代危險作業（2026-2030預估）',
+    '家用服務機器人（照護老人、家務協助）',
+    '與大型語言模型深度整合，能理解自然語言任務',
+    '台灣機器人零組件產業機會（減速機、馬達、感測器）',
+  ],
+},
+
+// ──────────────────────────────────────────────────────
+// 🚗 電動車
+// ──────────────────────────────────────────────────────
+p4: {
+  icon: '🚗',
+  title: '電動車',
+  desc: '電動車是「會跑的電腦」——結合電力、機械、軟體、材料、通訊，是科系涵蓋最廣的消費產品，也是台灣下一個重要產業機會。',
+  tags: ['Tesla','BYD','鴻海MIH','裕隆','台達電','和大工業','貿聯'],
+  layout: 'cards',
+  nodes: [
+    {
+      id: 'drivetrain',
+      icon: '⚡',
+      title: '電驅動系統',
+      oneliner: '電動馬達比燃油引擎簡單——但要它做到最好，一點都不簡單',
+      intro: '電動馬達只有一個運動部件（轉子），比燃油引擎的幾百個零件簡單很多。但要讓電動車加速如超跑、爬坡如卡車、同時高效省電，需要電機系、電子系、機械系的精密協作。',
+      challenges: [
+        { title: '永磁同步馬達：高效但依賴稀土', body: '特斯拉後驅馬達用永磁同步設計，效率超過97%，但需要稀土磁鐵（釹鐵硼）。中國控制全球90%稀土產量，是供應鏈的戰略風險。感應馬達不需要稀土，但效率稍低——特斯拉在前後驅各用不同類型，根據工況切換。' },
+        { title: 'SiC功率半導體：讓逆變器更小更有效率', body: '逆變器把直流電池的電轉成交流驅動馬達，碳化矽（SiC）元件比傳統矽基元件耐更高電壓和溫度，開關損耗更低。特斯拉Model 3是第一款大量使用SiC的量產車，讓續航提升了5-10%。電子系的功率半導體研究直接影響電動車性能。' },
+        { title: '扭矩向量控制：四輪獨立驅動讓電動車的操控遠超燃油車', body: '四顆馬達可以在毫秒內獨立控制每個輪的扭矩，過彎時外側輪加速、內側輪減速，操控精度遠超機械差速器。這種「扭矩向量控制」需要精確的車輛動力學模型和即時控制演算法，是電機系和航太系控制理論的直接應用。' },
+      ],
+      frontier: '輪轂馬達（把馬達直接放在車輪裡）省掉傳動軸，理論上效率更高、設計更自由，但簧下質量增加影響懸吊性能，散熱也是難題。台灣的電機廠商（如東元、台達電）正在這個方向積極布局。',
+      core_depts: ['ee','en','me'],
+      sat_depts:  ['physics','math','aero'],
+    },
+    {
+      id: 'battery_ev',
+      icon: '🔋',
+      title: '電池系統',
+      oneliner: '電動車的心臟——決定續航、安全、成本的核心',
+      intro: 'Tesla Model S的電池包重約500公斤，包含數千顆18650電芯、複雜的冷卻水路、高壓電路、BMS系統，全部整合在車底板的扁平空間裡。這個系統決定了電動車最關鍵的三個指標：續航、充電速度、使用壽命。',
+      challenges: [
+        { title: '熱管理：電芯溫度必須維持在15-35度的窄範圍內', body: '鋰電池在低溫充電容量下降、高溫加速老化、過熱引發熱失控。電動車電池包有複雜的液冷（或熱泵）系統，讓幾千顆電芯維持在最佳溫度範圍。這個熱管理系統的設計是機械系熱流工程師的核心工作，複雜度不亞於引擎冷卻系統。' },
+        { title: '結構整合：電池包同時是車身結構件', body: 'Tesla的「電池底盤一體化」設計，讓電池包同時承擔車身結構的功能，降低整車重量同時提升剛性。這需要機械工程師、材料工程師、電池工程師三方在設計階段就緊密協作，任何一方的修改都會影響其他兩方。' },
+        { title: '一致性：幾千顆電芯性能要幾乎完全相同', body: '電池組裡性能最差的電芯決定了整組的性能。如何在量產時確保每顆電芯的容量、內阻、壽命高度一致，是工業工程師的良率管控問題，也是台灣電池製造商進入車用市場的最大門檻。' },
+      ],
+      frontier: 'Cell-to-Body（CTP/CTB）技術把電芯直接整合進車身結構，省掉電池箱，進一步降低重量、提升能量密度。BYD和Tesla都在這個方向布局，目標是讓電動車的電池成本在2030年前降到100美元/kWh以下。',
+      core_depts: ['mat','che','ee','me'],
+      sat_depts:  ['physics','chem','en','ie'],
+    },
+    {
+      id: 'adas',
+      icon: '🎯',
+      title: '輔助駕駛與感知',
+      oneliner: '讓車子看懂路況——這是AI和工程之間最難的邊界',
+      intro: '從Level 2輔助駕駛到Level 4自動駕駛，差距不是硬體，而是在億萬種複雜場景下的決策準確率。這個問題目前沒有人完全解決——但它是AI、光電、通訊、電子四個科系最激烈競爭的前沿戰場。',
+      challenges: [
+        { title: '感測器融合：讓攝影機、雷達、LiDAR的資訊互相補充', body: '攝影機辨識能力強但對光線敏感；毫米波雷達能穿透霧雨但分辨率低；LiDAR精準但昂貴。完整的自動駕駛系統需要把這三種感測器的資訊即時融合，在任何天候下都能準確判斷路況。這是資工系感測器融合演算法的頂尖應用場景。' },
+        { title: '邊緣案例：99.9%準確還不夠，那0.1%可能致命', body: '自動駕駛必須應對無數罕見情況：工地突然出現的警示牌、逆光下幾乎看不見的行人、貨車上掉落的輪胎。這些「長尾問題」讓自動駕駛必須不斷收集真實路況數據、更新模型。Tesla的「影子模式」讓百萬輛車同時蒐集數據，是目前最大的自動駕駛訓練資料集。' },
+        { title: '車規晶片：民用等級的AI晶片不能直接用在車上', body: '車用晶片必須在-40到+150度、高振動、高電磁干擾環境下工作，可靠度要求比消費電子高幾個數量級，同時還要通過ISO 26262功能安全認證。這讓車用AI晶片的設計比一般消費晶片貴幾倍、難幾倍，是電子系目前最有挑戰性的應用之一。' },
+      ],
+      frontier: 'Level 4自動駕駛（完全不需要人類介入）的商業化比預期慢很多。Waymo在舊金山的無人計程車服務是目前最接近商業化的案例，但仍有很多限制。真正的突破可能來自AI基礎模型的進步，而不是更多感測器硬體。',
+      core_depts: ['cs','optics','comm','en'],
+      sat_depts:  ['math','ee','mat'],
+    },
+    {
+      id: 'chassis',
+      icon: '🏗️',
+      title: '車身結構與底盤',
+      oneliner: '讓電動車在碰撞時保護乘客——這是機械工程最重要的社會責任',
+      intro: '電動車的車身設計和燃油車根本不同：沒有引擎艙，前方可以設計成更長的潰縮區吸收衝擊；電池在車底提供低重心，操控天生比燃油車好。但這些優勢怎麼設計進去，需要機械系、材料系、航太系的結構工程師。',
+      challenges: [
+        { title: '吉加壓鑄：用超大壓鑄機一次成型後車底板，省掉70個零件', body: 'Tesla開創了「吉加壓鑄」（Giga Casting）技術，用9000噸壓力把液態鋁合金一次壓鑄成整個後車底板，取代原本需要焊接的70個零件，重量減輕10%，製造成本大幅降低。但壓鑄鋁合金的碰撞修復比傳統鋼板難很多——這引發了汽車工程界對「可修復性」的重新討論。' },
+        { title: '碳纖維複合材料：讓車子更輕但量產成本是難題', body: '減輕100公斤可以增加約10km續航。碳纖維比鋁輕40%且更強，但成型周期長、成本高，目前主要用在豪華電動車和賽車。如何讓碳纖維的量產成本降到普通消費者能接受的水準，是材料系和製造工程師的長期目標。' },
+        { title: '電池保護：側面撞擊時不能讓電池破損引發熱失控', body: '電池包在車底，側面碰撞時是最脆弱的方向。結構工程師必須在車門和電池之間設計足夠強的防撞結構，同時不能讓車子太重。這需要有限元素分析（FEA）模擬幾百種碰撞情境，找到最佳結構設計。機械系的碰撞工程是這個問題的核心。' },
+      ],
+      frontier: '電動車的「平台化」設計讓同一個底盤可以衍生出不同車型（轎車、SUV、卡車），大幅降低研發成本。鴻海的MIH開放平台試圖讓台灣品牌能用同一個底盤做不同電動車，這是台灣切入電動車市場的重要策略。',
+      core_depts: ['me','mat','aero'],
+      sat_depts:  ['civil','che','mecha'],
+    },
+    {
+      id: 'software_ev',
+      icon: '💻',
+      title: '軟體與車機系統',
+      oneliner: '電動車買回去之後，軟體更新可以讓它變得更快、更安全',
+      intro: 'Tesla讓「OTA（空中下載更新）」成為汽車標配——不需要進廠，車子在停車時自動下載新功能。這讓軟體工程師的角色在汽車產業裡從配角變主角。車子不再是買回去就固定的產品，而是持續進化的軟體平台。',
+      challenges: [
+        { title: '車用作業系統：同時要快、要可靠、要安全', body: 'Tesla的車機系統執行地圖、娛樂、儀表、空調控制，同時要確保行車安全功能（剎車、轉向）絕對優先。這種「混合關鍵性」的系統設計，比手機作業系統複雜很多，需要對即時作業系統（RTOS）有深入理解的工程師。' },
+        { title: 'V2X車聯網：讓車子和紅綠燈、其他車子、停車場溝通', body: '當所有車子都能互相通訊時，可以預防很多碰撞（前方緊急煞車立即通知後方車輛），也能最佳化交通流量。這需要低延遲的V2X通訊協定（DSRC或C-V2X），對通訊系工程師來說是讓學術研究進入量產的難得機會。' },
+        { title: '資安：怎麼確保遠端軟體更新不被黑客劫持', body: '如果有人能入侵車輛OTA系統，推送惡意軟體，後果可能是致命的。車輛資安（Automotive Cybersecurity）現在是資工系最重要的新興方向之一，也是歐盟和台灣政府正在推動立法規範的領域。' },
+      ],
+      frontier: '「軟體定義汽車」（Software-Defined Vehicle）概念下，車子的功能完全由軟體決定，硬體只是平台。未來你可能付訂閱費「解鎖」更強的加速性能或自動駕駛功能，就像訂閱串流媒體一樣。這將徹底改變汽車產業的商業模式。',
+      core_depts: ['cs','comm','ee'],
+      sat_depts:  ['math','en','engmgmt'],
+    },
+    {
+      id: 'thermal_ev',
+      icon: '🌡️',
+      title: '熱管理系統',
+      oneliner: '電動車最容易被忽略的系統——卻是冬天續航減少40%的罪魁禍首',
+      intro: '燃油車的廢熱可以直接用來暖車廂，電動車沒有引擎廢熱，冬天暖氣要消耗電池電力。同時電池、馬達、功率電子都在運作中產生熱，需要精確管理。熱管理系統決定了電動車在各種氣候下的真實使用體驗。',
+      challenges: [
+        { title: '熱泵系統：比電阻加熱省電三倍，但低溫下效率大幅下降', body: '熱泵從外部空氣（或廢熱）中提取熱能，比電熱絲效率高很多。但氣溫低於-10度時，熱泵效率急劇下降，必須切換回電阻加熱。如何讓熱泵在更低溫度下維持高效，是機械系熱力學和冷凍空調工程師的挑戰。' },
+        { title: '統一熱管理：讓電池的廢熱直接用來暖車廂', body: '理想的電動車熱管理是「統一迴路」——讓電池、馬達、功率電子的廢熱都能回收利用，需要加熱時用廢熱，需要冷卻時把熱排到車外。這個系統的設計比燃油車空調複雜幾倍，需要精確的熱流模擬和控制策略。' },
+        { title: '快充熱管理：10分鐘充80%，電芯溫度不能超過45度', body: '快充時大電流產生大量熱，如果冷卻跟不上，電芯溫度過高會加速老化甚至引發安全問題。超快充（350kW）需要液冷充電槍同時冷卻充電線和電池，這個工程挑戰讓充電基礎設施的設計比想像中複雜很多。' },
+      ],
+      frontier: '固態電池不需要精密的溫度管理（工作溫度範圍更廣），如果量產成功，可能大幅簡化電動車的熱管理系統，同時解決冬季續航問題。這是固態電池除了能量密度之外另一個重要的應用優勢。',
+      core_depts: ['me','che','mat'],
+      sat_depts:  ['ee','physics','env'],
+    },
+  ],
+  companies: [
+    { name:'Tesla', note:'電動車龍頭' },{ name:'BYD', note:'電池+整車' },
+    { name:'鴻海MIH', note:'台灣電動車平台' },{ name:'台達電', note:'電驅動/充電' },
+    { name:'和大工業', note:'傳動系統' },{ name:'貿聯-KY', note:'充電線束' },
+  ],
+  future: [
+    '固態電池量產（2027-2030，豐田/三星目標）',
+    '電動飛機/電動船延伸應用',
+    '車網整合（V2G）讓電動車成為家庭儲能設備',
+    '台灣MIH平台孕育本土電動車品牌',
+  ],
+},
+
+// ──────────────────────────────────────────────────────
+// 🔋 電池技術
+// ──────────────────────────────────────────────────────
+p5: {
+  icon: '🔋',
+  title: '電池技術',
+  desc: '以鋰電池為核心，探討兩個最關鍵的工程問題：安全性和性能。這個案例特別設計來展示「同一個問題，不同科系從不同層次切入」——從基礎科學到製造管理，每一層都不可缺少。',
+  tags: ['寧德時代(CATL)','松下','LG Energy','台灣鋰電','工研院電池中心'],
+  layout: 'problems',
+  problems: [
+    // ── 問題一：安全 ──
+    {
+      id: 'safety',
+      icon: '🔥',
+      // ✏️ 問題標題
+      title: '問題一：鋰電池為什麼不安全？',
+      subtitle: '熱失控（Thermal Runaway）是電池安全的核心挑戰',
+      intro: '鋰電池在某些條件下會發生「熱失控」——溫度升高導致化學反應加速，反應放熱導致溫度進一步升高，形成惡性循環，最終在幾秒內從正常電池變成火焰和毒氣。Boeing 787、三星Note 7、各種電動車起火事故，背後都是這個機制。',
+      // ✏️ 各層次的切入角度（由下到上）
+      layers: [
+        {
+          color: '#06b6d4',
+          level: '基礎科學層',
+          question: '為什麼會發生熱失控？機制是什麼？',
+          // ✏️ 這層的說明
+          body: '物理系研究熱失控的能量傳遞：電池內部的熱怎麼從一顆電芯蔓延到整個電池包，這是固態熱傳導和輻射的問題。化學系研究電解液在高溫下的分解反應——電解液（通常是碳酸酯類）在超過80度時開始分解，產生可燃氣體；正極材料（如NCA）在高溫下釋放氧氣，和可燃氣體結合就是爆炸的前兆。理解了「為什麼」，才能從根本上設計出更安全的電池。',
+          // ✏️ 還沒解決的問題
+          unsolved: '鋰枝晶（Lithium Dendrite）形成的精確機制仍有爭議——在快速充電時，鋰離子來不及均勻嵌入石墨負極，在表面形成樹枝狀金屬鋰，刺穿隔膜造成短路。為什麼某些條件下枝晶長得快，某些條件長得慢，物理化學機制還沒有完整的理論描述。',
+          core_depts: ['physics','chem'],
+          sat_depts: ['math'],
+        },
+        {
+          color: '#10b981',
+          level: '材料工程層',
+          question: '換什麼材料可以從根本避免？',
+          body: '材料系從材料選擇和微觀結構著手：正極材料從NCA換成磷酸鋰鐵（LFP）——LFP即使在高溫下也不釋放氧氣，從根本上移除了熱失控的燃料之一，代價是能量密度較低。隔膜塗上陶瓷層，讓它在高溫下不收縮、不破裂，延長熱失控發生到起火的時間窗口，讓保護系統有更多時間介入。固態電解質取代液態電解液，從根本移除可燃物——這是材料系目前最熱門的電池安全研究方向。',
+          unsolved: '固態電解質的界面問題：固態電解質和電極之間的接觸不像液態那樣緊密，離子傳導受阻，導致內阻高、充電速度慢。如何讓固固界面的離子傳導和液液界面一樣順暢，是材料系目前最難突破的問題。',
+          core_depts: ['mat','chem'],
+          sat_depts: ['physics','che'],
+        },
+        {
+          color: '#f97316',
+          level: '工程系統層',
+          question: '用結構和系統在危險發生前介入',
+          body: '機械系設計電池包的熱管理結構：液冷板把電芯的熱均勻帶走，防止局部過熱；防火隔板在一顆電芯起火時阻止火焰蔓延到鄰近電芯，爭取逃生時間（Tesla的設計目標是讓電池包起火後五分鐘內不會進入車廂）。化工系設計電解液中的阻燃添加劑：在溫度超過某個閾值時自動釋放阻燃劑，干擾燃燒化學反應。電機系設計BMS電池管理系統：即時監控每顆電芯的溫度、電壓、電流，在偵測到異常趨勢時提前介入——在熱失控發生前0.1秒切斷電流。',
+          unsolved: '電芯內部的感測：BMS只能監控電池包外部的溫度和電壓，無法直接知道電芯內部的狀態。如何非侵入式地監測電芯內部溫度和鋰枝晶生長，是感測器技術和材料科學的交叉挑戰。',
+          core_depts: ['me','ee','che'],
+          sat_depts: ['en','mat'],
+        },
+        {
+          color: '#8b5cf6',
+          level: '製造管理層',
+          question: '如何確保每一顆出廠電池都是安全的？',
+          body: '工業工程設計電池出廠測試流程：每顆電芯必須通過針刺測試（模擬枝晶刺穿隔膜）、過充測試、短路測試——任何一項失敗就報廢。統計製程管制（SPC）監控生產過程中的關鍵參數，找出哪台設備、哪個班次生產的電池有更高的潛在風險，在出廠前就攔截。工程管理設計召回流程：當某批次電池在市場上出現問題時，如何在最短時間內定位問題電池、通知用戶、執行換電——這個流程的品質直接影響品牌生死。',
+          unsolved: '電池的「潛伏缺陷」：某些電池在出廠測試時完全正常，但在使用幾百次循環後才出現問題。如何在出廠前就預測電池的長期可靠性，而不需要等幾年觀察，是品質工程師目前最難解決的問題。',
+          core_depts: ['ie','engmgmt'],
+          sat_depts: ['cs','math','env'],
+        },
+      ],
+    },
+    // ── 問題二：性能 ──
+    {
+      id: 'performance',
+      icon: '⚡',
+      title: '問題二：如何讓電池性能更好？',
+      subtitle: '更多電、充更快、用更久——三個目標永遠互相衝突',
+      intro: '電池性能有三個核心指標：能量密度（能存多少電）、功率密度（能多快放電/充電）、循環壽命（能充放幾次）。材料物理告訴我們，這三個指標本質上互相衝突——提升其中一個，往往要犧牲另外一個。如何在這個三角矛盾中找到最佳平衡，是電池工程師每天在解決的問題。',
+      layers: [
+        {
+          color: '#06b6d4',
+          level: '基礎科學層',
+          question: '理論上限是多少？鎂電池為什麼更有潛力？',
+          // ✏️ 這裡的內容請老師把關（你的專業領域）
+          body: '物理系用第一原理計算（Density Functional Theory, DFT）預測新材料的理論能量密度，在合成實驗前就能知道某種材料是否值得嘗試。化學系研究電化學反應的基本機制：為什麼鋰離子在某些材料裡移動快、在某些材料裡移動慢？這個「離子傳導」的微觀機制決定了充電速度的理論上限。\n\n鎂電池：鎂離子帶兩個正電荷（鋰只有一個），理論上同樣體積可以存兩倍的電。鎂在自然界儲量豐富，成本遠低於鋰，且鎂金屬負極不會形成枝晶，從根本解決了安全問題。但鎂離子在正極材料裡的移動比鋰離子慢很多（因為帶更多電荷，和材料晶格的交互作用更強），這是目前鎂電池最大的技術瓶頸，也是研究室正在攻克的核心問題。',
+          unsolved: '鎂電池的正極材料問題：目前沒有找到能讓鎂離子快速移動同時具有高能量密度的正極材料。這個問題需要材料合成、電化學測試、理論計算三者緊密配合，是全球電池基礎研究的重要前沿之一。',
+          core_depts: ['physics','chem','math'],
+          sat_depts: [],
+        },
+        {
+          color: '#10b981',
+          level: '材料工程層',
+          question: '換什麼材料可以存更多電、充更快？',
+          body: '正極材料決定能量密度的上限：高鎳NCM（鎳鈷錳比例8:1:1）和NCA能量密度高，但熱穩定性差；LFP安全但能量密度低。材料系工程師正在開發「無鈷正極」（減少昂貴且有人權問題的鈷）和「富鋰錳基」材料，試圖同時提升能量密度和安全性。負極材料：矽的理論容量是石墨的10倍，但矽在充放電時體積變化300%，會讓電極粉碎。矽碳複合負極用奈米矽顆粒分散在石墨基質裡，讓矽的膨脹有空間緩衝，是目前最接近商業化的高能量密度負極材料。',
+          unsolved: '固態電解質的室溫離子電導率：現有的固態電解質在室溫下的離子傳導能力比液態電解質低1-2個數量級，必須加熱才能達到足夠的充電速度。如何提升固態電解質在室溫下的離子電導率，是材料系最關鍵的研究問題。',
+          core_depts: ['mat','chem'],
+          sat_depts: ['physics','che'],
+        },
+        {
+          color: '#f97316',
+          level: '工程系統層',
+          question: '用工程設計突破材料的限制',
+          body: '快充熱管理：大電流快充產生大量熱，機械系設計液冷充電槍和電池包內的精密冷卻迴路，讓充電過程中電芯溫度維持在最佳範圍。充電演算法：傳統CC-CV（恆流-恆壓）充電沒有考慮電池的即時狀態。新一代充電策略用多段電流波形、根據電池溫度和老化程度即時調整參數，讓同樣的電池充得更快同時壽命更長——這是電機系控制理論的直接應用。電池包架構：並聯更多電芯可以增加容量，串聯更多電芯可以提高電壓。如何設計最佳的串並聯架構，在重量、成本、性能之間取得最佳平衡，需要系統工程的優化方法。',
+          unsolved: '快充和壽命的根本矛盾：大電流快充讓鋰離子嵌入石墨的速度超過晶格能接受的速度，導致表面析鋰和電極損傷，加速老化。這個矛盾需要材料層面的突破（更快的負極材料）才能從根本解決。',
+          core_depts: ['me','ee','che'],
+          sat_depts: ['en','mat','math'],
+        },
+        {
+          color: '#8b5cf6',
+          level: '製造管理層',
+          question: '如何確保高性能電池量產時性能一致？',
+          body: '電芯一致性控制：高鎳正極對製程條件（濕度、溫度、塗佈均勻性）極度敏感，工業工程師必須把生產環境控制到接近半導體廠的標準。電池分選：出廠前對每顆電芯進行容量、內阻、自放電率的精確測量和分級，確保同一組電池包裡的電芯性能高度一致。供應鏈管理：鎳、鈷、鋰的價格波動劇烈，採購策略和原料庫存管理直接影響電池製造商的獲利能力，工程管理和科技管理的知識在這裡至關重要。',
+          unsolved: '電池壽命的快速評估：現在確認一顆電池能用幾百次循環，需要真的充放幾百次，花幾個月時間。如何在幾天內預測電池的長期壽命，是品質工程和AI的重要交叉應用，也是讓新材料更快進入市場的關鍵瓶頸。',
+          core_depts: ['ie','engmgmt','techmgmt'],
+          sat_depts: ['cs','math','env'],
+        },
+      ],
+    },
+  ],
+  companies: [
+    { name:'寧德時代(CATL)', note:'全球最大電池廠' },{ name:'松下', note:'特斯拉電池夥伴' },
+    { name:'LG Energy', note:'韓國電池龍頭' },{ name:'台灣鋰電', note:'台灣本土' },
+    { name:'工研院', note:'電池研究中心' },{ name:'輝能科技', note:'台灣固態電池' },
+  ],
+  future: [
+    '固態電池量產（豐田/三星目標2027-2030）',
+    '鈉離子電池（廉價替代，不需稀有鋰）',
+    '鎂電池（更高理論能量密度，仍在基礎研究階段）',
+    '電網級液流電池（長時儲能）',
+    '電池回收與資源循環（ESG與供應鏈安全）',
+  ],
+  note: '⚠️ 儲能的世界不只是電池：抽水蓄電、熔鹽熱儲能、氫能（電解水製氫→燃料電池）都是重要技術，各自需要不同科系，是另一個值得深入的方向。',
+},
+
+// ──────────────────────────────────────────────────────
+// 🧠 AI產業
+// ──────────────────────────────────────────────────────
+p6: {
+  icon: '🧠',
+  title: 'AI產業基礎設施',
+  desc: 'AI不只是軟體——在你和ChatGPT對話的背後，是幾萬顆GPU、幾十萬噸的冷卻水、幾百億瓦的電力，以及幾乎所有工程科系的貢獻。',
+  tags: ['輝達(NVIDIA)','台積電','台達電','廣達','緯穎','Google','Microsoft'],
+  layout: 'chain',
+  nodes: [
+    {
+      id: 'ai_chip',
+      icon: '⚡',
+      title: 'AI晶片設計',
+      subtitle: '輝達、AMD、Google TPU、台灣自研AI晶片',
+      oneliner: '為什麼AI需要GPU而不是CPU？這個問題的答案改變了整個半導體產業',
+      intro: 'CPU擅長複雜的序列運算（一件事做得非常精確），GPU擅長大量簡單運算同時進行（幾千件事同時做）。訓練AI模型需要對龐大的矩陣做大量乘法——這正是GPU的強項。輝達H100有80GB記憶體、3.35TB/s記憶體頻寬，是目前AI訓練最核心的硬體。',
+      challenges: [
+        { title: '記憶體頻寬才是AI訓練的真正瓶頸', body: '現代AI晶片的運算單元速度極快，但常常在等記憶體送資料過來。HBM（高頻寬記憶體）把DRAM晶片直接疊在GPU旁邊，頻寬比傳統DDR記憶體高10倍以上。台積電的CoWoS封裝技術是實現HBM整合的關鍵，讓台灣在AI晶片供應鏈裡處於不可或缺的位置。' },
+        { title: '能耗：一顆H100滿載功耗700瓦，一個伺服器機架超過100kW', body: '訓練GPT-4估計消耗超過5000萬度電。如何讓AI晶片在相同運算量下消耗更少電力，是電子系和電機系最重要的設計挑戰。低精度運算（INT8、FP8）在犧牲少量精度的前提下，可以把能耗降低4-8倍，是目前最主流的省電方案。' },
+        { title: '台灣自研AI晶片：不能永遠依賴輝達', body: '聯發科、聯發科、創鑫智慧、台灣政府支持的計畫都在投入AI晶片研發。自研晶片可以針對特定應用（如推論、邊緣AI）最佳化，成本比輝達GPU低很多。但自研晶片需要完整的軟體生態系（編譯器、框架支援），這是目前最大的挑戰。' },
+      ],
+      frontier: 'Transformer架構的硬體化：目前大多數AI晶片還是通用架構，下一代「Transformer專用晶片」會針對注意力機制（Attention）做硬體加速，可能讓AI推論效率再提升10倍。台灣的IC設計人才是這個方向的核心競爭力。',
+      core_depts: ['en','cs','ee','math'],
+      sat_depts:  ['physics','mat'],
+    },
+    {
+      id: 'advanced_pkg',
+      icon: '📦',
+      title: '先進封裝',
+      subtitle: '台積電CoWoS、日月光、力成',
+      oneliner: '台積電CoWoS是讓AI晶片性能飛躍的關鍵——不是製程，是封裝',
+      intro: '輝達H100的GPU晶片本身由台積電4奈米製造，但讓它性能飛躍的是CoWoS封裝——把8個HBM3記憶體堆疊體，透過矽中介層（Silicon Interposer）連接到GPU，形成超寬頻寬的記憶體通道。這個封裝技術比製程進步對AI性能的貢獻更大，也是台積電目前最賺錢的業務之一。',
+      challenges: [
+        { title: 'CoWoS矽中介層：這本身就是一片小型晶圓', body: '矽中介層上有超過10億條細如蜘蛛絲的連線，連接GPU和HBM。製作這片中介層需要和晶圓製造幾乎相同的製程設備，但良率要求更高——一旦中介層有缺陷，整個組裝好的昂貴封裝體就報廢。台積電目前是全球最有能力量產大尺寸CoWoS的廠商。' },
+        { title: '3D IC堆疊：把記憶體直接疊在邏輯晶片上方', body: '比CoWoS更進一步的是SoIC（System on Integrated Chips）——把記憶體晶片直接鍵合在處理器晶片上方，用矽穿孔（TSV）連接，頻寬更高、延遲更低。但中間的晶片散熱成問題，如何讓熱從「三明治」中間散出去，是機械系熱設計工程師最新的挑戰。' },
+        { title: '供應吃緊：CoWoS產能是AI晶片出貨的最大瓶頸', body: '2023-2024年AI晶片需求爆炸，台積電的CoWoS產能嚴重不足，輝達的H100出貨量受限。台積電正在大量擴建CoWoS產能，但建設先進封裝產線需要時間——這讓「先進封裝工程師」成為半導體業最搶手的人才之一。' },
+      ],
+      frontier: '光子學互連（Photonic Interconnect）用光信號取代銅線，在晶片之間傳遞資料，頻寬更高、能耗更低。這個技術如果成熟，可能讓未來的AI伺服器把計算和記憶體分離在不同地點，用光纖連接，徹底改變資料中心的架構。',
+      core_depts: ['en','me','mat','optics'],
+      sat_depts:  ['ee','mecha'],
+    },
+    {
+      id: 'datacenter',
+      icon: '🏭',
+      title: '資料中心基礎設施',
+      subtitle: '廣達、緯穎、英業達、台達電',
+      oneliner: '一個AI資料中心的用電量相當於一個中型城市——散熱是最大的工程挑戰',
+      intro: '訓練一個大型AI模型需要幾千顆GPU同時運作幾個月。這些GPU全部裝在資料中心裡，每個機架的功耗可達100kW以上。如何把這些熱散掉，同時讓資料中心的電力效率（PUE）接近1.0，是機械、電機、土木三個科系的頂尖挑戰。台灣的伺服器廠商（廣達、緯穎）是全球AI資料中心的主要供應商。',
+      challenges: [
+        { title: '液冷：風冷已經不夠散掉100kW/機架的熱', body: '傳統資料中心用空調和風扇散熱，但AI伺服器的功率密度讓空冷無法應付。直接液冷（Direct Liquid Cooling）把冷卻水直接接到伺服器主板上，比空冷效率高幾十倍。浸沒式液冷（Immersion Cooling）把整台伺服器浸在絕緣冷卻液裡，是功率密度最高場景的解決方案。機械系熱流工程師是設計這些系統的核心人才。' },
+        { title: '電力穩定性：幾千顆GPU不能因為電壓瞬間波動而當機', body: '資料中心的電力系統必須提供極度穩定的電壓，同時要有UPS（不斷電系統）在市電中斷時毫秒內切換。AI訓練任務一旦中斷，可能需要從上一個存檔點重新開始，浪費大量時間和電力。電機系的電力電子工程師設計這套高可靠性電源系統。' },
+        { title: '台灣的伺服器設計優勢：ODM模式讓台廠控制AI硬體的關鍵層', body: '廣達、緯穎、英業達是輝達、Google、微軟的主要伺服器ODM（原廠委託設計製造）廠商。他們不只是組裝，而是設計整個伺服器的散熱、電源、主板佈局。這讓台灣掌握了AI基礎設施的重要設計能力，也是台灣工程人才的重要就業機會。' },
+      ],
+      frontier: '核能小型模組化反應器（SMR）正被微軟、Google等科技公司考慮作為AI資料中心的專屬電源。AI用電量的爆炸讓再生能源跟不上，核能可能是唯一能在短時間內提供大量穩定基載電力的解方。台灣的能源政策和工程人才培育都會受到這個趨勢影響。',
+      core_depts: ['me','ee','civil'],
+      sat_depts:  ['env','engmgmt','cs'],
+    },
+    {
+      id: 'network',
+      icon: '📡',
+      title: '高速網路互連',
+      subtitle: 'InfiniBand、400G乙太網路、光收發模組',
+      oneliner: '讓幾千顆GPU像一顆超級大腦一樣同步運作——網路是最容易被忽略的瓶頸',
+      intro: '訓練大型AI模型需要幾千顆GPU密切協作，它們之間每秒要交換幾TB的資料。如果網路頻寬不夠或延遲太高，GPU會大部分時間都在等資料，導致利用率極低。InfiniBand和400G高速乙太網路是目前AI叢集最常用的網路架構，台灣的光收發模組廠商（如光聖、波若威）是這個供應鏈的重要環節。',
+      challenges: [
+        { title: 'All-reduce：讓幾千顆GPU同時協調梯度更新', body: '深度學習訓練用「資料並行」把訓練資料分給不同GPU，每輪訓練後所有GPU要交換梯度（all-reduce操作）。這個操作的通訊量和GPU數量的平方成正比——GPU越多，網路挑戰越大。NVIDIA的NVLink讓8顆GPU直接互連，跳過網路，但更大的叢集還是要靠InfiniBand。' },
+        { title: '光收發模組：400G/800G光模組的散熱和功耗', body: '高速光模組把電信號轉成光信號在光纖中傳輸。400G光模組的功耗可達10-15瓦，一個滿配的交換器可能有幾百個光模組，總功耗驚人。如何讓光模組更省電、更耐熱，是光電系和電機系的交叉工程問題，也是台灣光模組廠商的核心競爭力。' },
+        { title: '網路拓撲最佳化：讓通訊延遲最小、頻寬最大', body: '幾千顆GPU如何連線才能讓all-reduce操作最快？不同的胖樹（Fat-Tree）和蜻蜓（Dragonfly）拓撲有不同的成本和性能取捨。這是通訊系的網路規劃問題，也是數學最佳化的直接應用。' },
+      ],
+      frontier: '矽光子技術（Silicon Photonics）把光學元件直接整合進矽晶片，讓光收發模組更小、更便宜、功耗更低。台積電和幾家台灣新創公司正在這個方向積極投入，可能在2026-2028年改變AI資料中心的網路架構。',
+      core_depts: ['comm','optics','en'],
+      sat_depts:  ['cs','math','ee'],
+    },
+    {
+      id: 'training',
+      icon: '🔬',
+      title: '模型訓練與演算法',
+      subtitle: 'OpenAI、Google DeepMind、Meta AI、台灣AI研究室',
+      oneliner: '讓幾千億個參數「學會」理解人類語言——這是數學和資工的終極挑戰',
+      intro: '訓練GPT-4用了幾萬顆A100 GPU跑了幾個月，消耗幾千萬度電，耗費幾億美元。但訓練本身用到的核心數學——反向傳播（Backpropagation）、梯度下降——是1980年代就有的理論。是資料規模、計算能力、和架構創新三者同時到位，才讓今天的大型語言模型成為可能。',
+      challenges: [
+        { title: 'Transformer注意力機制：計算量和序列長度的平方成正比', body: 'Transformer的注意力機制讓模型能處理長距離依賴關係，但計算量隨序列長度的平方增加——輸入長度加倍，計算量變四倍。讓模型能處理更長的上下文（書本、程式碼庫），需要線性注意力、稀疏注意力等數學近似方法。這是數學系和資工系的前沿交叉問題。' },
+        { title: '訓練穩定性：幾千顆GPU跑幾個月，中途不能當機也不能梯度爆炸', body: '大規模訓練會遇到梯度爆炸（參數更新過大導致崩潰）、死亡ReLU（某些神經元永遠不激活）等問題。如何設計訓練流程讓其在長時間內保持穩定，是目前只有少數頂尖研究室有能力解決的工程問題。' },
+        { title: '台灣的機會：推論優化和垂直領域AI', body: '訓練超大模型需要的資源目前只有幾家科技巨頭能負擔。台灣的機會在「推論優化」（讓模型跑得更快更省電）和「垂直領域AI」（半導體製程AI、醫療AI、法律AI）。這些方向門檻較低，但需要同時懂AI和特定領域的複合人才。' },
+      ],
+      frontier: '強化學習從人類反饋（RLHF）讓AI從對話中學習人類偏好，是讓ChatGPT從「能說話」變成「說得好」的關鍵技術。下一步是讓AI能自己設計訓練課程、評估自己的輸出品質，不需要人類標注資料——這是AI研究目前最令人興奮也最充滿爭議的方向。',
+      core_depts: ['cs','math'],
+      sat_depts:  ['ee','en','physics'],
+    },
+    {
+      id: 'inference',
+      icon: '📱',
+      title: '推論部署與邊緣AI',
+      subtitle: '聯發科、高通、蘋果、台灣邊緣AI新創',
+      oneliner: '讓AI跑在你的手機和工廠機台上，而不只是雲端資料中心',
+      intro: '訓練AI需要龐大的資料中心，但使用AI（推論）可以更輕量。邊緣AI讓AI直接在手機、工廠設備、車輛上執行，不需要把資料傳到雲端——更快、更省頻寬、更保護隱私。聯發科的天璣9300已經能在手機上執行數十億參數的語言模型。',
+      challenges: [
+        { title: '模型壓縮：把千億參數模型塞進手機，同時保住效果', body: '量化（Quantization）把模型參數從32位元浮點數壓縮到4或8位元整數，讓模型大小縮小8倍，速度提升，代價是輕微的精度損失。知識蒸餾（Knowledge Distillation）用大模型教小模型，讓小模型學會大模型的「思路」而不需要同樣多的參數。這兩個技術是讓AI進入邊緣裝置的關鍵，也是台灣IC設計公司的重要研發方向。' },
+        { title: '異構計算：CPU、GPU、NPU如何分工合作', body: '手機AI晶片有CPU（通用）、GPU（圖形）、NPU（AI專用）三種核心，不同類型的AI任務要分配給最合適的核心。如何設計高效的任務調度器，讓三種核心都不閒置、都不過載，是電子系和資工系的系統設計問題。' },
+        { title: '工廠邊緣AI：讓AI在沒有網路的工廠環境裡即時判斷', body: '台積電的光學缺陷檢測AI需要在幾毫秒內判斷晶圓表面是否有缺陷，不能等資料上傳到雲端。這種「工業邊緣AI」要求極低延遲、高可靠性、能在高溫高濕環境下運作。台灣的工業自動化廠商正在這個方向積極整合AI能力。' },
+      ],
+      frontier: '「個人AI」的時代：每個人的裝置上跑一個只屬於自己、了解自己習慣和偏好的AI助理，不把個人資料上傳到雲端。這需要在幾瓦的功耗內跑出雲端AI的效果，是邊緣AI最終極的目標，也可能在2027-2030年成為現實。',
+      core_depts: ['cs','en','ee','comm'],
+      sat_depts:  ['math','mat'],
+    },
+    {
+      id: 'ai_mgmt',
+      icon: '📊',
+      title: 'AI治理與工程管理',
+      subtitle: 'AI政策、倫理工程、系統整合',
+      oneliner: '讓AI真正落地應用，需要的不只是技術——還需要能管理複雜系統的人',
+      intro: 'AI系統的失敗很少是因為演算法不好，更多是因為資料品質差、系統整合不完善、或沒有考慮到真實使用場景的複雜性。讓AI從實驗室進入產線、醫院、政府系統，需要能跨越技術和管理的複合人才。',
+      challenges: [
+        { title: 'MLOps：讓AI模型在部署後持續監控、更新、維護', body: 'AI模型在訓練資料上表現很好，但真實世界的資料分布會隨時間變化（資料飄移），導致模型性能下降。MLOps（機器學習運維）是確保AI系統在生產環境中長期穩定運作的工程體系，需要資工系的系統工程能力和工業工程的流程管理思維。' },
+        { title: 'AI偏見和公平性：訓練資料的問題會放大成系統性不公平', body: '如果訓練資料裡某個族群的資料不足，AI在那個族群上的表現就會更差。醫療AI、徵才AI、貸款審核AI的偏見問題已經在歐美引發法律訴訟。台灣也開始立法規範AI系統的公平性要求，這需要同時理解AI技術和法律政策的複合人才。' },
+        { title: 'AI專案管理：為什麼80%的AI專案沒有進入生產環境', body: '很多公司花了大量資源開發AI，最後因為和現有系統整合困難、用戶不願意使用、或維護成本太高而失敗。如何在AI專案的規劃階段就識別這些風險，是工程管理和科技管理人才最重要的新能力。' },
+      ],
+      frontier: '「AI安全」（AI Safety）正從學術討論進入工程實踐——如何確保超強的AI系統按照人類的意圖行動、不會產生意外的有害行為，是Anthropic、OpenAI、DeepMind正在投入大量資源研究的問題。這個領域需要哲學、數學、電腦科學的跨域思維。',
+      core_depts: ['cs','ie','engmgmt','techmgmt'],
+      sat_depts:  ['math','comm'],
+    },
+  ],
+  companies: [
+    { name:'輝達(NVIDIA)', note:'AI晶片龍頭' },{ name:'台積電', note:'AI晶片製造/CoWoS' },
+    { name:'廣達', note:'AI伺服器ODM' },{ name:'緯穎', note:'AI伺服器' },
+    { name:'聯發科', note:'邊緣AI晶片' },{ name:'台達電', note:'資料中心電源' },
+  ],
+  future: [
+    'AI晶片需求持續爆炸，台積電先進封裝成關鍵瓶頸',
+    '邊緣AI讓手機/工廠/車輛獨立運作AI',
+    '資料中心用電量逼近核能，能源轉型加速',
+    'AI安全與治理成為工程師的新必修',
+    '台灣ODM伺服器廠商成為AI基礎設施核心',
+  ],
+},
+
+}; // END PRODUCT_DATA
+
+const GROUPS = {
+  science: { name:'理學院群', color:'#06b6d4', short:'理學' },
+  elec:    { name:'電機電子群', color:'#f97316', short:'電機電子' },
+  eng:     { name:'工程學群', color:'#10b981', short:'工程' },
+  mgmt:    { name:'管理跨域群', color:'#8b5cf6', short:'管理跨域' },
+};
+
+const DEPTS = [
+  // ── 理學院群 ──
+  { id:'physics', group:'science', icon:'⚛️', name:'物理學系', nick:'物理系',
+    core:'「自然界的規律為什麼是這樣？」',
+    tagline:'所有工程科系的知識上游，問最根本的「為什麼」',
+    subjects:['量子力學','統計力學','電動力學','固態物理','光學'],
+    tools:['MATLAB','Python數值模擬','LaTeX','同步輻射儀器'],
+    jobs:['半導體物理研究員','量子計算研究員','材料基礎研究','台積電製程研發','國家實驗室'],
+    p1_type:'sat', p1_role:'觸控螢幕的量子穿隧原理、半導體元件的固態物理基礎、雷射光源的量子光學',
+    p2_type:'core', p2_role:'電漿物理（蝕刻製程）、薄膜沉積物理機制、量子效應（先進製程節點）、光學微影基礎',
+    p3_type:'sat', p3_role:'新型致動器原理研究（人工肌肉）、量子感測器、基礎動力學模型',
+    p4_type:'sat', p4_role:'電池熱失控的量子化學機制、超導體研究（未來馬達）、半導體物理（電力電子元件）',
+    p5_type:'core', p5_role:'電池界面電化學機制、鋰離子嵌入脫出的固態物理、熱失控的能量傳遞基礎研究',
+  },
+  { id:'chem', group:'science', icon:'🧪', name:'化學學系', nick:'化學系',
+    core:'「物質如何變化？反應機制是什麼？」',
+    tagline:'材料與製程的知識來源，從分子層面理解物質',
+    subjects:['有機化學','物理化學','無機化學','分析化學','量子化學'],
+    tools:['NMR核磁共振','質譜儀','X射線結晶學','DFT計算化學'],
+    jobs:['化學研究員','藥物研發','電池材料研究','半導體化學品開發','學術研究'],
+    p1_type:'sat', p1_role:'螢幕化學強化玻璃原理、電池電解液化學組成、光阻劑化學合成（半導體用）',
+    p2_type:'core', p2_role:'光阻劑化學（EUV光阻研發）、蝕刻氣體化學反應機制、CMP拋光液化學、清洗液配方',
+    p3_type:'sat', p3_role:'人工肌肉材料的化學合成、潤滑劑與密封材料化學',
+    p4_type:'sat', p4_role:'電解質化學分解機制、電極材料合成路線、廢電池回收化學',
+    p5_type:'core', p5_role:'正負極材料的合成化學、電解質分解副反應、SEI膜形成機制、新型電解質開發',
+  },
+  { id:'math', group:'science', icon:'📐', name:'數學學系', nick:'數學系',
+    core:'「如何用抽象語言精確描述世界？」',
+    tagline:'演算法與最佳化的基礎，工程的數學語言',
+    subjects:['微分方程','數值分析','最佳化理論','機率論','拓撲學'],
+    tools:['MATLAB','Python/NumPy','Mathematica','統計軟體R'],
+    jobs:['量化分析師','AI研究員','密碼學工程師','精算師','最佳化工程師'],
+    p1_type:'sat', p1_role:'影像壓縮演算法（JPEG/HEIC數學基礎）、加密通訊數學、信號處理的傅立葉分析',
+    p2_type:'sat', p2_role:'良率統計模型、製程最佳化數學、缺陷分佈統計分析',
+    p3_type:'core', p3_role:'步態規劃最佳化（非線性規劃）、強化學習數學基礎、運動學方程求解、機器人動力學建模',
+    p4_type:'sat', p4_role:'自動駕駛路徑規劃演算法、電池壽命預測統計模型、車輛動力學方程',
+    p5_type:'sat', p5_role:'電池老化模型（數學建模）、最佳充放電策略（動態規劃）、電池壽命統計預測',
+  },
+
+  // ── 電機電子群 ──
+  { id:'ee', group:'elec', icon:'⚡', name:'電機工程學系', nick:'電機系',
+    core:'「如何安全有效地傳遞並控制電能與訊號？」',
+    tagline:'讓機器真正動起來——馬達、電力、控制系統',
+    subjects:['電路學','電磁學','控制系統','電力電子','訊號與系統'],
+    tools:['MATLAB/Simulink','LTspice','LabVIEW','示波器/電表'],
+    jobs:['電力系統工程師','馬達控制工程師','電控工程師','韌體工程師','台電/台積電'],
+    p1_type:'core', p1_role:'充電管理IC、無線充電（磁共振設計）、電池管理系統BMS、震動馬達驅動',
+    p2_type:'core', p2_role:'廠房配電系統、電動設備馬達驅動、PLC控制器、電漿腔體電源供應',
+    p3_type:'core', p3_role:'伺服馬達驅動器、電源管理系統、安全斷電保護、把「軟體指令」轉成「關節轉動」',
+    p4_type:'core', p4_role:'電驅動系統（三相馬達+逆變器）、再生制動能量回收、高壓電系統安全、充電樁協議',
+    p5_type:'core', p5_role:'BMS電池管理系統（電壓/電流/溫度監控）、過充過放保護電路、均衡充電演算法',
+  },
+  { id:'en', group:'elec', icon:'🔌', name:'電子工程學系', nick:'電子系',
+    core:'「如何在矽晶片上實現電子功能？」',
+    tagline:'晶片設計、半導體、訊號處理的核心科系',
+    subjects:['半導體元件','類比電路','數位電路設計','積體電路','通訊原理'],
+    tools:['Cadence IC設計','Verilog/VHDL','FPGA開發板','頻譜分析儀'],
+    jobs:['IC設計工程師','半導體工程師','RF工程師','嵌入式工程師','台積電/聯發科'],
+    p1_type:'core', p1_role:'應用處理器晶片設計（A系列/天璣）、5G射頻晶片、影像感測器ISP、記憶體控制器',
+    p2_type:'core', p2_role:'製程控制感測器IC、FPGA即時製程監控、測試設備訊號電路、半導體量測儀器',
+    p3_type:'core', p3_role:'MCU微控制器、FPGA即時控制、感測器訊號前端電路、CAN bus通訊晶片',
+    p4_type:'core', p4_role:'功率半導體（SiC MOSFET）、車用MCU、ADAS感測器IC、車用乙太網晶片',
+    p5_type:'core', p5_role:'電池監控IC（AFE類比前端）、電量計晶片、絕緣監測電路、快充協議晶片',
+  },
+  { id:'cs', group:'elec', icon:'💾', name:'資訊工程學系', nick:'資工系',
+    core:'「如何讓電腦解決複雜問題？」',
+    tagline:'軟體大腦——演算法、AI、系統架構',
+    subjects:['資料結構與演算法','作業系統','人工智慧','資料庫','計算機網路'],
+    tools:['Python/C++','Linux','Git','PyTorch/TensorFlow','Docker'],
+    jobs:['軟體工程師','AI研究工程師','後端架構師','資安研究員','CTO'],
+    p1_type:'core', p1_role:'手機作業系統底層、APP框架、AI語音助理演算法、人臉辨識、相機場景辨識',
+    p2_type:'core', p2_role:'MES製造執行系統、良率預測AI模型、缺陷圖像辨識、即時製程數據分析平台',
+    p3_type:'core', p3_role:'路徑規劃演算法（A*/RRT）、機器視覺物件辨識、強化學習訓練、任務調度系統',
+    p4_type:'core', p4_role:'自動駕駛感知融合演算法、ADAS決策系統、車機OTA更新系統、車輛網路安全',
+    p5_type:'sat', p5_role:'電池健康預測AI模型（SOH估算）、充電策略最佳化軟體、電池管理系統韌體',
+  },
+  { id:'comm', group:'elec', icon:'📡', name:'通訊工程學系', nick:'通訊系',
+    core:'「如何讓資訊在不同地方之間正確傳遞？」',
+    tagline:'5G、衛星、網路——連接一切的科系',
+    subjects:['通訊理論','無線通訊','訊號處理','網路協定','資訊理論'],
+    tools:['MATLAB','GNU Radio','Wireshark','頻譜分析儀'],
+    jobs:['5G系統工程師','網路架構工程師','RF工程師','衛星通訊工程師','中華電信/高通'],
+    p1_type:'core', p1_role:'4G/5G通訊協定、WiFi/藍牙訊號最佳化、天線設計、訊號調變解調',
+    p2_type:'sat', p2_role:'工廠無線感測網路、設備遠端監控通訊、機台間資料傳輸協定',
+    p3_type:'core', p3_role:'多機器人協作通訊、低延遲5G遠端控制、感測器資料即時傳輸、群體協調訊號',
+    p4_type:'core', p4_role:'V2X車聯網通訊、車內CAN/LIN/乙太網、遠端診斷OTA通訊、自駕感測器同步',
+    p5_type:'sat', p5_role:'電池雲端監控通訊（IoT）、電網調度通訊協定、電池資料遠端回傳',
+  },
+  { id:'optics', group:'elec', icon:'💡', name:'光電工程學系', nick:'光電系',
+    core:'「如何利用光子傳遞能量與資訊？」',
+    tagline:'雷射、顯示器、光纖、LiDAR——用光解決問題',
+    subjects:['光學','雷射物理','光電元件','光纖通訊','顯示器技術'],
+    tools:['光學設計軟體(Zemax)','FDTD模擬','雷射量測系統','光譜儀'],
+    jobs:['顯示器工程師','光學系統工程師','LiDAR工程師','光纖通訊工程師','友達/台達電'],
+    p1_type:'core', p1_role:'OLED/LCD螢幕設計、相機鏡頭光學設計、Face ID結構光模組、螢幕色彩校準',
+    p2_type:'core', p2_role:'EUV/DUV微影光學系統、晶圓表面光學量測（OCD）、雷射退火、光學膜層量測',
+    p3_type:'core', p3_role:'3D視覺LiDAR（機器人眼睛）、結構光深度感測、光纖觸覺感測器、夜視系統',
+    p4_type:'core', p4_role:'車用LiDAR系統、抬頭顯示器（HUD）光學、攝像頭光學模組、車燈LED設計',
+    p5_type:'sat', p5_role:'電池內部光纖溫度感測、光學式電量計、鋰枝晶生長光學觀測儀器',
+  },
+
+  // ── 工程學群 ──
+  { id:'me', group:'eng', icon:'⚙️', name:'機械工程學系', nick:'機械系',
+    core:'「如何設計能承受力、熱、運動的實體結構？」',
+    tagline:'所有「動得起來、撐得住」的東西背後都有機械系',
+    subjects:['工程力學','熱力學','流體力學','機械設計','製造工程'],
+    tools:['SolidWorks/CATIA','ANSYS有限元素分析','CNC加工','3D列印'],
+    jobs:['機構設計工程師','熱設計工程師','製程工程師','R&D研發','台積電設備工程師'],
+    p1_type:'core', p1_role:'鋁合金機殼精密加工、散熱結構（熱管/石墨片）、鏡頭模組機構、轉軸設計',
+    p2_type:'core', p2_role:'半導體設備機構設計（機械手臂取放晶圓）、真空腔體機械設計、CMP研磨機構、廠房設備維護',
+    p3_type:'core', p3_role:'手臂骨架結構設計、關節傳動機構（諧波減速機）、步態動力學、仿生機構研究',
+    p4_type:'core', p4_role:'車身結構輕量化（鋁/碳纖維）、電池包機械保護、底盤懸吊設計、碰撞吸能結構',
+    p5_type:'core', p5_role:'電池液冷板熱管理設計、電池包機械殼體、碰撞防護結構、散熱模擬（FEA）',
+  },
+  { id:'mecha', group:'eng', icon:'🦾', name:'機電整合工程學系', nick:'機電系',
+    core:'「如何讓機械與電子完美整合，產生智慧行為？」',
+    tagline:'機械+電子+控制+軟體的跨域整合科系，最適合機器人產業',
+    subjects:['機電整合','自動控制','感測器技術','嵌入式系統','機器人學'],
+    tools:['ROS機器人系統','Arduino/Raspberry Pi','MATLAB/Simulink','SolidWorks'],
+    jobs:['機器人工程師','自動化工程師','系統整合工程師','產品工程師','台達電/廣明光電'],
+    p1_type:'sat', p1_role:'手機攝影模組的對焦機構電控、指紋辨識模組整合、馬達+感測器的精密整合',
+    p2_type:'core', p2_role:'晶圓傳送機器人（EFEM）、自動光學檢測機台整合、設備感測器與控制器整合',
+    p3_type:'core', p3_role:'這個科系最直接對應人形機器人——負責把感知、決策、動作系統整合成一個可運作的整體',
+    p4_type:'core', p4_role:'電動車線控底盤系統、電動動力轉向、ADAS感測器與車輛控制整合',
+    p5_type:'sat', p5_role:'電池測試設備設計、電池PACK組裝自動化設備',
+  },
+  { id:'che', group:'eng', icon:'⚗️', name:'化學工程學系', nick:'化工系',
+    core:'「如何設計與控制化學反應過程、讓它能大量生產？」',
+    tagline:'從實驗室配方到工廠量產的橋樑',
+    subjects:['化學反應工程','質量傳輸','熱傳學','程序控制','分離工程'],
+    tools:['Aspen Plus製程模擬','流體模擬','SEM/XRD分析','反應器設計'],
+    jobs:['製程工程師（台積電）','電池製程工程師','化學品研發','環境工程師','台塑/中油'],
+    p1_type:'sat', p1_role:'電池電解液配方量產、螢幕玻璃化學強化製程、PCB化學蝕刻製程',
+    p2_type:'core', p2_role:'CVD/ALD薄膜沉積製程、蝕刻液與清洗液配方、CMP漿料、廢液處理系統',
+    p3_type:'sat', p3_role:'液壓油與潤滑劑配方、關節密封材料製程、電路板防護塗層',
+    p4_type:'core', p4_role:'電池電解液量產製程、燃料電池氫氣處理、廢氣後處理觸媒製程',
+    p5_type:'core', p5_role:'電解液配方開發與量產、電極漿料製程（塗佈/乾燥）、電池製程良率控制、回收製程設計',
+  },
+  { id:'mat', group:'eng', icon:'🔬', name:'材料科學與工程學系', nick:'材料系',
+    core:'「如何改變材料的微觀結構，獲得我們需要的性質？」',
+    tagline:'從原子層面改變物質，讓所有產品更好',
+    subjects:['材料熱力學','金屬/陶瓷/高分子','材料分析','表面科學','奈米材料'],
+    tools:['SEM/TEM電子顯微鏡','XRD繞射','AFM原子力顯微鏡','拉伸試驗機'],
+    jobs:['材料研發工程師','電池材料工程師','半導體材料工程師','品質工程師','工研院'],
+    p1_type:'core', p1_role:'強化玻璃（Corning大猩猩玻璃）材料研發、電池正負極材料、導熱石墨材料、奈米塗層',
+    p2_type:'core', p2_role:'Low-k介電材料、阻障層金屬材料（鈷/釕）、光罩基板材料、封裝基板材料研發',
+    p3_type:'sat', p3_role:'碳纖維複合材料手臂、高強度合金關節、仿生材料研究（人工肌腱）',
+    p4_type:'core', p4_role:'電池正極材料（NCM/LFP）、固態電解質、車身鋁合金、碳纖維車殼',
+    p5_type:'core', p5_role:'正極材料（NCM811/NCA/LFP）開發、負極材料（矽碳複合）、固態電解質研發、次世代電池材料（鎂電池/鈉電池）',
+  },
+  { id:'civil', group:'eng', icon:'🏗️', name:'土木工程學系', nick:'土木系',
+    core:'「如何設計與建造能承受環境荷載的大型結構？」',
+    tagline:'半導體廠房、電池工廠都需要土木工程師打地基',
+    subjects:['結構力學','大地工程','鋼筋混凝土設計','測量學','水利工程'],
+    tools:['AutoCAD/SAP2000','有限元素結構分析','BIM建築資訊模型','地質調查'],
+    jobs:['結構工程師','大地工程師','建設公司','政府工程單位','台積電廠務'],
+    p1_type:'sat', p1_role:'生產工廠廠房結構設計（無塵室建築）、設備基礎隔振設計',
+    p2_type:'core', p2_role:'超高規格無塵室廠房結構（台積電廠房是全球最精密建築之一）、超精密基礎隔振（奈米級振動控制）、廠區基礎設施',
+    p3_type:'sat', p3_role:'機器人工廠廠房結構、大型測試場地設計',
+    p4_type:'sat', p4_role:'電動車工廠廠房、充電站基礎設施、停車場結構設計',
+    p5_type:'sat', p5_role:'電池工廠廠房設計、大型儲能電站基礎結構、抽水蓄能水壩（廣義儲能）',
+  },
+  { id:'aero', group:'eng', icon:'✈️', name:'航空太空工程學系', nick:'航太系',
+    core:'「如何在極端環境下讓飛行器精確運動？」',
+    tagline:'控制理論和輕量化結構的頂尖訓練，跨界影響機器人和電動車',
+    subjects:['空氣動力學','結構輕量化','飛行控制理論','推進系統','軌道力學'],
+    tools:['ANSYS Fluent流體模擬','MATLAB飛控','風洞實驗','複合材料製程'],
+    jobs:['飛控工程師','結構工程師','無人機工程師','太空系統工程師','漢翔/空軍'],
+    p1_type:'sat', p1_role:'輕薄機殼的複合材料應用、散熱流體分析（借用CFD工具）',
+    p2_type:'sat', p2_role:'精密設備的振動控制（借用飛控理論）',
+    p3_type:'core', p3_role:'步態動態穩定控制理論（與飛控高度相關）、機體輕量化設計、關節力矩最佳化',
+    p4_type:'core', p4_role:'車輛動力學控制（借用飛控理論）、碳纖維車身設計、空氣動力學外形最佳化',
+    p5_type:'sat', p5_role:'無人機電池輕量化設計、太空用電池極端環境設計',
+  },
+  { id:'bio', group:'eng', icon:'🧬', name:'生醫工程學系', nick:'生醫系',
+    core:'「如何將工程技術應用於生命科學與醫療？」',
+    tagline:'義肢、醫療器材、仿生感測——人形機器人的隱藏共同體',
+    subjects:['生物力學','醫學影像','生醫感測器','人體解剖','生醫材料'],
+    tools:['醫學影像處理','生理訊號量測','有限元素生物力學','細胞培養'],
+    jobs:['醫療器材工程師','義肢研發工程師','醫學影像工程師','FDA法規工程師','工研院生醫所'],
+    p1_type:'sat', p1_role:'穿戴式健康監測（心率/血氧感測）、醫療級顯示器校色、輔助聽力裝置',
+    p2_type:'sat', p2_role:'半導體生物晶片（基因定序晶片）、醫療影像感測器',
+    p3_type:'core', p3_role:'人形機器人仿生手設計（觸覺感測/力量控制）、人機協作安全、義肢控制研究高度相關',
+    p4_type:'sat', p4_role:'車用健康監測感測器（駕駛疲勞偵測）、緊急醫療系統整合',
+    p5_type:'sat', p5_role:'植入式醫療設備微型電池設計、穿戴式裝置電源管理',
+  },
+  { id:'env', group:'eng', icon:'🌿', name:'環境工程學系', nick:'環工系',
+    core:'「如何保護環境、處理工業廢棄物與污染？」',
+    tagline:'半導體工廠的廢水廢氣處理，ESG時代最重要的隱形角色',
+    subjects:['空氣污染控制','水處理工程','固體廢棄物','環境化學','環境影響評估'],
+    tools:['廢水處理系統','空污監測設備','環境模擬軟體','GIS地理資訊系統'],
+    jobs:['廢水處理工程師','空污防治工程師','環評顧問','台積電環安衛','政府環保單位'],
+    p1_type:'sat', p1_role:'電子廢棄物（e-waste）回收處理、製造過程廢液廢氣處理',
+    p2_type:'core', p2_role:'晶圓廠廢水處理（氫氟酸等高危廢液）、廢氣洗滌塔、化學品洩漏防護、台積電廢棄物零掩埋',
+    p3_type:'sat', p3_role:'機器人工廠廢棄物管理、製造過程環境排放控制',
+    p4_type:'sat', p4_role:'廢電池回收處理、電動車工廠廢水、碳排放計算',
+    p5_type:'core', p5_role:'廢電池回收處理流程、電池工廠廢液處理、電池生命週期評估（LCA）、電解液廢氣處理',
+  },
+
+  // ── 管理跨域群 ──
+  { id:'ie', group:'mgmt', icon:'📊', name:'工業工程學系', nick:'工業工程/IE',
+    core:'「如何讓系統更有效率、更少浪費、良率更高？」',
+    tagline:'台積電良率從50%到99%以上，背後有大量IE工程師的貢獻',
+    subjects:['作業研究','統計製程管制','人因工程','供應鏈管理','精實生產'],
+    tools:['Minitab統計分析','JMP','Arena模擬','六標準差工具'],
+    jobs:['IE工程師','良率工程師','供應鏈工程師','品質工程師','台積電/鴻海/台達電'],
+    p1_type:'sat', p1_role:'手機組裝產線效率最佳化、品質管制流程設計、產線瓶頸分析',
+    p2_type:'core', p2_role:'良率統計製程管制（SPC）、缺陷根因分析、晶圓廠產線排程最佳化、設備綜合效率（OEE）提升',
+    p3_type:'core', p3_role:'機器人組裝工廠效率設計、人機協作安全評估、機器人導入產線ROI分析',
+    p4_type:'core', p4_role:'電動車工廠產線設計、電池組裝良率管控、供應鏈排程、減少生產浪費',
+    p5_type:'core', p5_role:'電池生產良率管控（電芯一致性）、產線統計製程管制、缺陷電池篩選流程設計',
+  },
+  { id:'engmgmt', group:'mgmt', icon:'🏢', name:'工程管理學系', nick:'工程管理',
+    core:'「如何管理複雜的工程專案，在時間、成本、品質三者中取得平衡？」',
+    tagline:'台積電、護國群山都需要能同時懂工程又懂管理的人',
+    subjects:['專案管理','工程經濟','組織行為','風險管理','科技創新管理'],
+    tools:['MS Project','PMP方法論','ERP系統','財務分析模型'],
+    jobs:['專案經理（PM）','技術長（CTO）','工廠廠長','顧問','科技新創創辦人'],
+    p1_type:'sat', p1_role:'新產品開發專案管理（NPI）、供應商管理、產品上市時程規劃',
+    p2_type:'core', p2_role:'新廠建置專案管理（數百億投資）、設備採購管理、跨部門協調、工程師團隊管理',
+    p3_type:'sat', p3_role:'機器人導入企業的可行性評估、系統整合專案管理',
+    p4_type:'sat', p4_role:'電動車開發專案管理、跨國供應鏈協調、工廠擴產規劃',
+    p5_type:'sat', p5_role:'儲能電站建置專案管理、電池供應鏈管理、政府儲能補貼申請',
+  },
+  { id:'techmgmt', group:'mgmt', icon:'💼', name:'科技管理學系', nick:'科技管理',
+    core:'「如何將技術創新轉化為商業價值？」',
+    tagline:'技術和商業的翻譯官，科技創業的必備背景',
+    subjects:['科技行銷','智慧財產權','創新管理','科技政策','企業策略'],
+    tools:['商業模式分析','技術路線圖','專利分析工具','財務模型'],
+    jobs:['技術分析師','專利工程師','科技顧問','產品經理（PM）','創業'],
+    p1_type:'sat', p1_role:'3C產品市場策略分析、專利佈局、技術授權談判',
+    p2_type:'sat', p2_role:'半導體產業競爭分析、政府研發補助規劃、技術轉移',
+    p3_type:'sat', p3_role:'機器人商業模式設計、新創公司募資策略、市場進入分析',
+    p4_type:'sat', p4_role:'電動車市場趨勢分析、技術標準參與、商業生態系設計',
+    p5_type:'sat', p5_role:'儲能政策分析、電池新創投資評估、能源轉型商業模式',
+  },
+];
+
+// ═══════════ COMPARE DATA ═══════════
+const COMPARE = [
+  { group:'science', color:'#06b6d4', name:'物理系', core:'為什麼自然界是這樣運作的？', courses:'量子力學、固態物理、電動力學', tools:'Python模擬、同步輻射', jobs:'半導體研究員、量子計算、學術研究' },
+  { group:'science', color:'#06b6d4', name:'化學系', core:'物質如何變化？反應機制是什麼？', courses:'有機化學、物理化學、量子化學', tools:'NMR、質譜儀、DFT計算', jobs:'材料合成、電池化學、藥物研發' },
+  { group:'science', color:'#06b6d4', name:'數學系', core:'如何用抽象語言精確描述問題？', courses:'數值分析、最佳化理論、機率論', tools:'MATLAB、Python、Mathematica', jobs:'AI研究員、量化分析師、密碼學' },
+  { group:'elec', color:'#f97316', name:'電機系', core:'如何安全控制電能與訊號？', courses:'電路學、控制系統、電力電子', tools:'MATLAB/Simulink、LTspice、示波器', jobs:'電力/馬達/控制工程師、台電' },
+  { group:'elec', color:'#f97316', name:'電子系', core:'如何在晶片上實現電子功能？', courses:'半導體元件、積體電路、類比電路', tools:'Cadence、Verilog、FPGA', jobs:'IC設計師、RF工程師、聯發科/台積電' },
+  { group:'elec', color:'#f97316', name:'資工系', core:'如何讓電腦解決複雜問題？', courses:'演算法、作業系統、AI、資料庫', tools:'Python/C++、Linux、PyTorch', jobs:'軟體工程師、AI工程師、後端架構師' },
+  { group:'elec', color:'#f97316', name:'通訊系', core:'如何讓資訊正確傳遞？', courses:'通訊理論、無線通訊、訊號處理', tools:'MATLAB、GNU Radio、Wireshark', jobs:'5G工程師、網路架構師、RF工程師' },
+  { group:'elec', color:'#f97316', name:'光電系', core:'如何用光子傳遞能量與資訊？', courses:'光學、雷射物理、光電元件', tools:'Zemax、FDTD模擬、光譜儀', jobs:'LiDAR工程師、顯示器工程師、EUV光學' },
+  { group:'eng', color:'#10b981', name:'機械系', core:'如何設計承受力熱運動的結構？', courses:'工程力學、熱力學、機械設計', tools:'SolidWorks、ANSYS、CNC', jobs:'機構/熱設計工程師、台積電設備' },
+  { group:'eng', color:'#10b981', name:'機電系', core:'如何整合機械與電子達到智慧行為？', courses:'機電整合、自動控制、機器人學', tools:'ROS、Simulink、SolidWorks', jobs:'機器人工程師、自動化工程師' },
+  { group:'eng', color:'#10b981', name:'化工系', core:'如何設計化學反應製程讓它量產？', courses:'化學反應工程、質量傳輸、程序控制', tools:'Aspen Plus、流體模擬', jobs:'製程工程師（台積電）、電池製程工程師' },
+  { group:'eng', color:'#10b981', name:'材料系', core:'如何改變微觀結構獲得所需性質？', courses:'材料熱力學、奈米材料、材料分析', tools:'SEM/TEM、XRD、AFM', jobs:'電池材料工程師、半導體材料工程師' },
+  { group:'eng', color:'#10b981', name:'土木系', core:'如何設計承受環境荷載的大型結構？', courses:'結構力學、大地工程、RC設計', tools:'SAP2000、BIM、有限元素分析', jobs:'結構工程師、台積電廠務' },
+  { group:'eng', color:'#10b981', name:'航太系', core:'如何在極端環境讓飛行器精確運動？', courses:'空氣動力學、飛行控制、輕量化結構', tools:'ANSYS Fluent、MATLAB飛控', jobs:'飛控工程師、無人機工程師、漢翔' },
+  { group:'eng', color:'#10b981', name:'生醫系', core:'如何將工程技術應用於醫療與生命科學？', courses:'生物力學、醫學影像、生醫感測', tools:'醫學影像處理、生理訊號量測', jobs:'醫療器材工程師、義肢研發' },
+  { group:'eng', color:'#10b981', name:'環工系', core:'如何保護環境、處理工業污染？', courses:'空氣污染控制、水處理工程、環境化學', tools:'廢水處理系統、GIS', jobs:'廢水工程師、台積電環安衛' },
+  { group:'mgmt', color:'#8b5cf6', name:'工業工程', core:'如何讓系統更有效率、良率更高？', courses:'作業研究、統計製程管制、精實生產', tools:'Minitab、JMP、六標準差', jobs:'IE工程師、良率工程師、台積電/鴻海' },
+  { group:'mgmt', color:'#8b5cf6', name:'工程管理', core:'如何管理複雜工程專案達到目標？', courses:'專案管理、工程經濟、風險管理', tools:'MS Project、PMP、ERP', jobs:'專案經理、工廠廠長、技術顧問' },
+  { group:'mgmt', color:'#8b5cf6', name:'科技管理', core:'如何將技術創新轉化為商業價值？', courses:'科技行銷、智財權、創新管理', tools:'商業模式分析、專利工具', jobs:'技術分析師、PM、專利工程師、創業' },
+];
+
+// ═══════════ MYTHS DATA ═══════════
+const MYTHS = [
+  { wrong:'資工系就是學寫程式的，其他系不寫程式', right:'現在每個工程系都寫程式！機械系寫模擬、材料系寫分析、化工系寫製程控制。差別是「程式是你的工具，還是你的核心產品」。' },
+  { wrong:'電機系和電子系一樣，換個名字而已', right:'電機偏「強電」（馬達、電力系統、控制）；電子偏「弱電」（晶片、訊號、半導體）。雖然很多學校已合併，但研究方向差距相當大。' },
+  { wrong:'機械系很傳統，以後沒前途', right:'完全相反！人形機器人、電動車、半導體設備都需要機械系。台積電設備工程師很多是機械背景，而且薪水非常高。' },
+  { wrong:'物理系、數學系出來只能當老師', right:'物理系是半導體基礎研究的核心，台積電先進製程研發有大量物理博士。數學系畢業生在AI公司、量化金融的薪水往往高過一般工程系。' },
+  { wrong:'工管/IE就是管工人的，不需要懂工程', right:'IE工程師是台積電提升良率的關鍵功臣，需要深厚的統計學和製程知識。台積電IE薪資和工程師相當，完全不輸給「純技術」路線。' },
+  { wrong:'讀什麼系就只能做那個行業', right:'工程師跨領域非常普遍。機械系去做投資、化工系進管顧、物理系創業AI公司——工程訓練的核心是「解題思維」，不是特定知識的牢籠。' },
+  { wrong:'資工系薪水最高，所以一定要讀資工', right:'薪水取決於產業和職位。半導體製程工程師（化工/材料背景）、台積電良率工程師（IE背景）薪資完全不輸軟體工程師。選興趣才是長期策略。' },
+  { wrong:'化工系就是去石化工廠上班', right:'化工系是台積電最重要的製程工程師來源之一。電池製程、生技製藥、特用化學品，都是現在最熱門的化工出路，石化只是其中一小塊。' },
+];
+
+// ═══════════ SOURCES DATA ═══════════
+const SOURCES = [
+  { cat:'學術與課程參考', items:[
+    '台灣各大學理工學院系所官網（成大、台大、清大、交大、台科大）',
+    '教育部學科標準分類（工程學門、自然科學學門）',
+    'IEEE Spectrum：工程教育年度報告',
+  ]},
+  { cat:'半導體產業', items:[
+    '台積電官方年報（tsmc.com/ir）',
+    '工業技術研究院電子與光電研究所',
+    'SEMI國際半導體產業協會',
+    'IC Insights：半導體產業分析報告',
+  ]},
+  { cat:'機器人與自動化', items:[
+    'Tesla Optimus技術展示（2023-2024）',
+    'Boston Dynamics官方技術白皮書',
+    'IEEE Robotics and Automation Society',
+    '台灣機器人產業發展白皮書（MIRDC）',
+  ]},
+  { cat:'電動車與能源', items:[
+    'Tesla技術白皮書與Patents',
+    '鴻海MIH聯盟技術文件',
+    '台灣電動車產業發展報告（工研院IEK）',
+    'BloombergNEF電池價格報告',
+  ]},
+  { cat:'電池與儲能', items:[
+    'Nature Energy：電池技術綜述文獻',
+    '工研院電池中心研究報告',
+    '美國能源部（DOE）電池技術白皮書',
+    'IDTechEx：電池市場分析報告',
+    'Joule期刊：電池材料最新研究',
+  ]},
+  { cat:'產業人才與出路', items:[
+    '104人力銀行工程類職缺薪資調查',
+    '天下雜誌：台灣科技人才需求報告',
+    '科技部人才培育白皮書',
+    '各科技公司官方校園招募說明會資料',
+  ]},
+];
+
+// ═══════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════
+
+function getDept(id){ return DEPTS.find(d=>d.id===id); }
+
+// ── 科系小卡（產品視角第二層）──
+function makeDeptMini(dept, isCore){
+  const color = GROUPS[dept.group].color;
+  return `
+    <div class="dcard" style="--dc:${color}" onclick="toggleCard(this)">
+      <div class="dcard-top">
+        <div class="dcard-icon">${dept.icon}</div>
+        <div style="flex:1">
+          <div class="dcard-name">${dept.name}</div>
+          <span class="dcard-nick">${dept.nick}</span>
+        </div>
+        <span class="dcard-type ${isCore?'type-core':'type-sat'}">${isCore?'核心':'衛星'}</span>
+        <span class="toggle-arrow">▼</span>
+      </div>
+      <div class="dcard-detail">
+        <div class="detail-section">
+          <div class="detail-key">核心問題意識</div>
+          <div style="font-size:13px;color:#a0a0c0;line-height:1.6;">${dept.core}</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-key">代表課程</div>
+          <div class="detail-tags">${dept.subjects.map(s=>`<span class="dtag">${s}</span>`).join('')}</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-key">常用工具</div>
+          <div class="detail-tags">${dept.tools.map(t=>`<span class="dtag">${t}</span>`).join('')}</div>
+        </div>
+        <div class="detail-section">
+          <div class="detail-key">畢業出路</div>
+          <div class="detail-tags">${dept.jobs.map(j=>`<span class="dtag-co">${j}</span>`).join('')}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── 節點卡（cards / chain 共用）──
+function makeNodeCard(node, idx){
+  const coreCards = (node.core_depts||[]).map(id=>{ const d=getDept(id); return d?makeDeptMini(d,true):''; }).join('');
+  const satCards  = (node.sat_depts||[]).map(id=>{ const d=getDept(id); return d?makeDeptMini(d,false):''; }).join('');
+  const deptBlock = `
+    <div class="node-depts">
+      ${coreCards ? `<div class="node-dept-label">CORE 核心科系</div><div class="dcards">${coreCards}</div>` : ''}
+      ${satCards  ? `<div class="node-dept-label sat">SATELLITE 衛星科系</div><div class="dcards">${satCards}</div>` : ''}
+    </div>`;
+
+  const challengesHtml = (node.challenges||[]).map(c=>`
+    <div class="challenge-item">
+      <div class="challenge-title">▸ ${c.title}</div>
+      <div class="challenge-body">${c.body}</div>
+    </div>`).join('');
+
+  const frontierHtml = node.frontier ? `
+    <div class="frontier-block">
+      <div class="frontier-label">🔭 前沿研究方向</div>
+      <div class="frontier-body">${node.frontier}</div>
+    </div>` : '';
+
+  return `
+    <div class="node-card" id="nc-${node.id}">
+      <div class="node-header" onclick="toggleNode(this)">
+        <div class="node-icon">${node.icon}</div>
+        <div class="node-header-text">
+          <div class="node-title">${node.title}</div>
+          <div class="node-oneliner">${node.oneliner}</div>
+        </div>
+        <span class="node-arrow">▼</span>
+      </div>
+      <div class="node-body">
+        <p class="node-intro">${node.intro}</p>
+        <button class="expand-btn" onclick="toggleDeep(this)">深入了解 ▾</button>
+        <div class="node-deep">
+          ${challengesHtml}
+          ${frontierHtml}
+        </div>
+        <button class="dept-btn" onclick="toggleDepts(this)">這需要哪些人？ ▾</button>
+        ${deptBlock}
+      </div>
+    </div>`;
+}
+
+// ── 渲染 cards 版型 ──
+function renderCards(p){
+  return p.nodes.map((n,i)=>makeNodeCard(n,i)).join('');
+}
+
+// ── 渲染 chain 版型（縱向流程）──
+function renderChain(p){
+  return `<div class="chain-flow">`+
+    p.nodes.map((n,i)=>`
+      <div class="chain-flow-step">
+        <div class="chain-flow-left">
+          <div class="chain-flow-num">${String(i+1).padStart(2,'0')}</div>
+          ${i<p.nodes.length-1?'<div class="chain-flow-line"></div>':''}
+        </div>
+        <div class="chain-flow-right">${makeNodeCard(n,i)}</div>
+      </div>`).join('')+
+    `</div>`;
+}
+
+// ── 渲染 problems 版型（電池）──
+function renderProblems(p){
+  return p.problems.map(prob=>{
+    const layersHtml = prob.layers.map((layer,i)=>{
+      const coreCards = (layer.core_depts||[]).map(id=>{ const d=getDept(id); return d?makeDeptMini(d,true):''; }).join('');
+      const satCards  = (layer.sat_depts||[]).map(id=>{ const d=getDept(id); return d?makeDeptMini(d,false):''; }).join('');
+      return `
+        <div class="prob-layer" style="--lc:${layer.color}">
+          <div class="prob-layer-header" onclick="toggleProbLayer(this)">
+            <div class="prob-layer-num" style="background:${layer.color}20;color:${layer.color}">${String(i+1).padStart(2,'0')}</div>
+            <div>
+              <div class="prob-layer-level" style="color:${layer.color}">${layer.level}</div>
+              <div class="prob-layer-q">${layer.question}</div>
+            </div>
+            <span class="prob-layer-arrow">▼</span>
+          </div>
+          <div class="prob-layer-body">
+            <p class="node-intro">${layer.body}</p>
+            ${layer.unsolved?`<div class="unsolved-block"><div class="unsolved-label">❓ 目前還沒解決的問題</div><div class="unsolved-body">${layer.unsolved}</div></div>`:''}
+            ${coreCards?`<div class="node-dept-label" style="margin-top:14px">CORE 核心科系</div><div class="dcards">${coreCards}</div>`:''}
+            ${satCards?`<div class="node-dept-label sat" style="margin-top:10px">SATELLITE 衛星科系</div><div class="dcards">${satCards}</div>`:''}
+          </div>
+        </div>`;
+    }).join('');
+    return `
+      <div class="prob-block">
+        <div class="prob-header">
+          <span class="prob-icon">${prob.icon}</span>
+          <div>
+            <div class="prob-title">${prob.title}</div>
+            <div class="prob-subtitle">${prob.subtitle}</div>
+          </div>
+        </div>
+        <p class="node-intro" style="margin-bottom:16px">${prob.intro}</p>
+        <div class="prob-layers">${layersHtml}</div>
+      </div>`;
+  }).join('');
+}
+
+// ── 主渲染函式 ──
+function renderProductPanel(pid){
+  const p = PRODUCT_DATA[pid];
+  if(!p) return '';
+
+  let html = `
+    <div class="pbanner">
+      <div class="pbanner-icon">${p.icon}</div>
+      <div>
+        <div class="pbanner-title">${p.title}</div>
+        <div class="pbanner-desc">${p.desc}</div>
+        <div class="pbanner-meta">${p.tags.map(t=>`<span class="pmeta-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>`;
+
+  if(p.layout==='cards')    html += renderCards(p);
+  if(p.layout==='chain')    html += renderChain(p);
+  if(p.layout==='problems') html += renderProblems(p);
+  if(p.note) html += `<div class="prod-note">${p.note}</div>`;
+
+  html += `
+    <div class="companies-strip">
+      <div class="companies-title">🏢 相關龍頭企業</div>
+      <div class="companies-grid">${p.companies.map(c=>`<span class="company-pill">${c.name}<span>${c.note}</span></span>`).join('')}</div>
+    </div>
+    <div class="future-strip">
+      <div class="future-title">🚀 未來10年戰場</div>
+      <div class="future-items">${p.future.map(f=>`<span class="future-item">${f}</span>`).join('')}</div>
+    </div>`;
+
+  return html;
+}
+
+// ═══════════ INIT PRODUCT PANELS ═══════════
+function initProductPanels(){
+  const container = document.getElementById('product-panels');
+  Object.keys(PRODUCT_DATA).forEach((pid,i)=>{
+    const div = document.createElement('div');
+    div.id = 'panel-'+pid;
+    div.className = 'panel'+(i===0?' active':'');
+    div.innerHTML = renderProductPanel(pid);
+    container.appendChild(div);
+  });
+}
+
+// ── Node toggle helpers ──
+function toggleNode(el){
+  const card = el.closest('.node-card');
+  card.classList.toggle('open');
+}
+function toggleDeep(btn){
+  const deep = btn.nextElementSibling;
+  const open = deep.classList.toggle('open');
+  btn.textContent = open ? '收起 ▴' : '深入了解 ▾';
+}
+function toggleDepts(btn){
+  const box = btn.nextElementSibling;
+  const open = box.classList.toggle('open');
+  btn.textContent = open ? '收起科系 ▴' : '這需要哪些人？ ▾';
+}
+function toggleProbLayer(el){
+  const body = el.nextElementSibling;
+  const arrow = el.querySelector('.prob-layer-arrow');
+  const open = body.classList.toggle('open');
+  if(arrow) arrow.style.transform = open?'rotate(180deg)':'';
+}
+
+// ═══════════ INIT DEPT VIEW ═══════════
+function initDeptView(){
+  const tabsEl = document.getElementById('group-tabs');
+  const panelsEl = document.getElementById('group-panels');
+  const gKeys = Object.keys(GROUPS);
+
+  gKeys.forEach((gk,i)=>{
+    const g = GROUPS[gk];
+    const btn = document.createElement('button');
+    btn.className = 'gtab'+(i===0?' active':'');
+    btn.style.color = i===0?g.color:'';
+    btn.style.borderColor = i===0?g.color:'';
+    btn.textContent = g.name;
+    btn.onclick = ()=>{
+      document.querySelectorAll('.gtab').forEach(b=>{b.classList.remove('active');b.style.color='';b.style.borderColor='';});
+      btn.classList.add('active');btn.style.color=g.color;btn.style.borderColor=g.color;
+      document.querySelectorAll('.group-panel').forEach(p=>p.classList.remove('active'));
+      document.getElementById('gp-'+gk).classList.add('active');
+    };
+    tabsEl.appendChild(btn);
+
+    const panel = document.createElement('div');
+    panel.id = 'gp-'+gk;
+    panel.className = 'group-panel'+(i===0?' active':'');
+    const depts = DEPTS.filter(d=>d.group===gk);
+    let html = `<div class="dcards">`;
+    depts.forEach(dept=>{
+      const color = g.color;
+      html += `
+        <div class="dcard" style="--dc:${color}" onclick="toggleCard(this)">
+          <div class="dcard-top">
+            <div class="dcard-icon">${dept.icon}</div>
+            <div style="flex:1">
+              <div class="dcard-name">${dept.name}</div>
+              <span class="dcard-nick">${dept.nick}</span>
+            </div>
+            <span class="toggle-arrow">▼</span>
+          </div>
+          <div class="dcard-role" style="font-style:italic;color:var(--text2);">${dept.tagline}</div>
+          <div class="dcard-detail">
+            <div class="detail-section">
+              <div class="detail-key">核心問題意識</div>
+              <div style="font-size:13px;color:#a0a0c0;line-height:1.6;">${dept.core}</div>
+            </div>
+            <div class="detail-section">
+              <div class="detail-key">大學代表課程</div>
+              <div class="detail-tags">${dept.subjects.map(s=>`<span class="dtag">${s}</span>`).join('')}</div>
+            </div>
+            <div class="detail-section">
+              <div class="detail-key">常用工具</div>
+              <div class="detail-tags">${dept.tools.map(t=>`<span class="dtag">${t}</span>`).join('')}</div>
+            </div>
+            <div class="detail-section">
+              <div class="detail-key">畢業出路</div>
+              <div class="detail-tags">${dept.jobs.map(j=>`<span class="dtag-co">${j}</span>`).join('')}</div>
+            </div>
+            <div class="detail-section">
+              <div class="detail-key">參與的產品案例</div>
+              <div class="detail-tags">
+                ${['p1','p2','p3','p4','p5','p6'].filter(p=>dept[p+'_role']).map(p=>{
+                  const pdata = PRODUCT_DATA[p];
+                  if(!pdata) return '';
+                  const isCore = dept[p+'_type']==='core';
+                  return `<span class="dtag-co" style="${isCore?'':'opacity:.6'}">${pdata.icon} ${pdata.title.split('（')[0]}${isCore?' ★':''}</span>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    });
+    html += `</div>`;
+    panel.innerHTML = html;
+    panelsEl.appendChild(panel);
+  });
+}
+
+// ═══════════ INIT COMPARE TABLE ═══════════
+function initCompare(){
+  const tbody = document.getElementById('compare-body');
+  COMPARE.forEach(r=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-name"><span class="dot8" style="background:${r.color}"></span>${r.name}</td>
+      <td>${r.core}</td>
+      <td style="font-size:12px">${r.courses}</td>
+      <td style="font-size:12px;font-family:'JetBrains Mono',monospace">${r.tools}</td>
+      <td style="font-size:12px">${r.jobs}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ═══════════ INIT MYTHS ═══════════
+function initMyths(){
+  const el = document.getElementById('myth-grid');
+  el.innerHTML = MYTHS.map(m=>`
+    <div class="myth-card">
+      <div class="myth-wrong"><span>✗</span><span>${m.wrong}</span></div>
+      <div class="myth-right"><span>✓</span><span>${m.right}</span></div>
+    </div>`).join('');
+}
+
+// ═══════════ INIT SOURCES ═══════════
+function initSources(){
+  const el = document.getElementById('sources-grid');
+  el.innerHTML = SOURCES.map(s=>`
+    <div class="source-card">
+      <div class="source-cat">${s.cat}</div>
+      ${s.items.map(item=>`<div class="source-item">· ${item}</div>`).join('')}
+    </div>`).join('');
+}
+
+// ═══════════ INTERACTIONS ═══════════
+function toggleCard(el){ el.classList.toggle('open'); }
+
+function switchProduct(pid, btn){
+  document.querySelectorAll('.ptab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#view-product .panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+pid).classList.add('active');
+}
+
+function switchView(v){
+  document.getElementById('vt-product').classList.toggle('active', v==='product');
+  document.getElementById('vt-dept').classList.toggle('active', v==='dept');
+  document.getElementById('view-product').style.display = v==='product'?'block':'none';
+  document.getElementById('view-dept').style.display = v==='dept'?'block':'none';
+}
+
+function navTo(id, btn){
+  document.querySelectorAll('.snav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+// ═══════════ SCROLL FADE IN ═══════════
+function initObserver(){
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); });
+  },{threshold:0.08});
+  document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
+}
+
+// ═══════════ BOOT ═══════════
+document.addEventListener('DOMContentLoaded',()=>{
+  initProductPanels();
+  initDeptView();
+  initCompare();
+  initMyths();
+  initSources();
+  initObserver();
+});
+</script>
+</body>
+</html>
